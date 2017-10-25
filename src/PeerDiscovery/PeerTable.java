@@ -5,16 +5,10 @@
  */
 package PeerDiscovery;
 
-import java.util.List;
-
 /**
  *
  * @author arpaf
  */
-public class HelloMessage {
-	int senderID;
-	int sequenceNumber;
-	int HelloInterval;
-	int NumPeers;
-	List<Integer> peers;
+public class PeerTable {
+	
 }
