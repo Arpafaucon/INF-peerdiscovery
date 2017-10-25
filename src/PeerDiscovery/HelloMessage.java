@@ -72,5 +72,29 @@ public class HelloMessage {
 	}
 
 
-	
+	public String getHelloMessageAsEncodedString() throws Exception
+	{
+		String result = HELLO;
+		result += ";";
+		result += senderID;
+		result += ";";
+		result += senquenceNumber;
+		result += ";";
+		result += helloInterval;
+		result += ";";
+		result += numPeers;
+
+		if(numPeers != peers.size())
+		{
+			throw new Exception("numPeer isn't equal to peers.size().");
+		}
+
+		for(int i = 0; i < numPeers; i++)
+		{
+			result += ";";
+			result += peers.elementAt(i);
+		}
+
+		return result;
+	}
 }
