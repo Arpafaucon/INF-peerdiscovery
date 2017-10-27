@@ -86,7 +86,7 @@ public class HelloMessage {
 
 		if(numPeers != peers.size())
 		{
-			throw new Exception("numPeer isn't equal to peers.size().");
+			throw new Exception("numPeers isn't equal to peers.size().");
 		}
 
 		for(int i = 0; i < numPeers; i++)
@@ -96,5 +96,20 @@ public class HelloMessage {
 		}
 
 		return result;
+	}
+	
+	public void addPeer(String peerID) throws Exception 
+	{
+		if (numPeers++ > 255)
+		{
+			throw new Exception("Cannot add another peer : maximal number of peers reached"); 
+		}
+		peers.add(peerID);
+		numPeers++;
+	}
+	
+	public String toString()
+	{
+		return this.getHelloMessageAsEncodedString();
 	}
 }
