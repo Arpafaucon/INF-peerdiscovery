@@ -10,7 +10,7 @@ import java.util.Vector;
 
 /**
  *
- * @author arpaf
+ * @author arpaf, AmaurX, Swann
  */
 public class HelloMessage {
 	String senderID;
@@ -60,12 +60,12 @@ public class HelloMessage {
 
 	/*
 	*	Constructor from info
-	*	Initializarion with no peers
+	*	Initialization with no peers
 	*/
 	public HelloMessage(String senderIdIn, int sequenceNo, int helloIntervalIn)
 	{
-		senderId = senderIdIn;
-		senquenceNumber = sequenceNo;
+		senderID = senderIdIn;
+		sequenceNumber = sequenceNo;
 		helloInterval = helloIntervalIn;
 		numPeers = 0;
 		peers = new Vector<String>();		
@@ -78,7 +78,7 @@ public class HelloMessage {
 		result += ";";
 		result += senderID;
 		result += ";";
-		result += senquenceNumber;
+		result += sequenceNumber;
 		result += ";";
 		result += helloInterval;
 		result += ";";
@@ -86,7 +86,7 @@ public class HelloMessage {
 
 		if(numPeers != peers.size())
 		{
-			throw new Exception("numPeer isn't equal to peers.size().");
+			throw new Exception("numPeers isn't equal to peers.size().");
 		}
 
 		for(int i = 0; i < numPeers; i++)
@@ -95,6 +95,44 @@ public class HelloMessage {
 			result += peers.elementAt(i);
 		}
 
+		return result;
+	}
+	
+
+	public void addPeer(String peerID) throws Exception 
+	{
+		if (numPeers++ > 255)
+		{
+			throw new Exception("Cannot add another peer : maximal number of peers reached"); 
+		}
+		peers.add(peerID);
+	}
+	
+	public String toString()
+	{
+		String result = "The sender is " + senderID + "\n";
+		result += "Senquence number is " + sequenceNumber; 
+		result += " and HelloInterval is " + helloInterval + "\n";
+		
+		if(numPeers != peers.size())
+		{
+			System.out.println("numPeers isn't equal to peers.size().");
+		}
+
+		if(numPeers > 0)
+		{
+			result += "The " + numPeers + " peers are :\n";
+			result += peers.elementAt(0);
+			for(int i = 1; i < peers.size(); i++)
+			{
+				result += ", " + peers.elementAt(i);
+			}
+			result+= ".\n";
+		}
+		else
+		{
+			result += "There are no peers\n";
+		}
 		return result;
 	}
 }
