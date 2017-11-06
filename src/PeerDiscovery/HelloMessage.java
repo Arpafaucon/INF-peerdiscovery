@@ -135,4 +135,22 @@ public class HelloMessage {
 		}
 		return result;
 	}
+	
+	public String getSenderID() 
+	{
+		//necessary to identify the peer who sent the message in the peerTable when receiving
+		return senderID ;
+	}
+	
+	public int getSequenceNumber() 
+	{
+		//necessary to check the consistency of the message
+		return sequenceNumber ;
+	}
+	
+	public int getHelloInterval() 
+	{
+		//necessary for knowing at which frequency the messages are to be sent
+		return helloInterval ;
+	}
 }
