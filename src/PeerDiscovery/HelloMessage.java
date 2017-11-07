@@ -34,7 +34,10 @@ public class HelloMessage {
 			throw new Exception("Missing arguments in the hello string");
 		}
 
-		if(!slist[0].equals(HELLO))
+		Pattern helloPattern = Pattern.compile("(h|H)(e|E)(l|L){2}(o|O)");
+		Matcher helloMatcher = helloPattern.matcher(messageCut[0]);
+		
+		if(!helloMatcher.matches())
 		{
 			throw new Exception("Not a Hello message");
 		}
