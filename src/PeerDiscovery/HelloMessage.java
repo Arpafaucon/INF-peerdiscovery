@@ -5,8 +5,10 @@
  */
 package PeerDiscovery;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -17,7 +19,7 @@ public class HelloMessage {
 	int sequenceNumber;
 	int helloInterval;
 	int numPeers;
-	Vector<String> peers;
+	List<String> peers;
 
 	static public String HELLO = "HELLO"; 
 
@@ -52,7 +54,7 @@ public class HelloMessage {
 			throw new Exception("Wrong number of peer given...");
 		}
 
-		peers = new Vector<String>();
+		peers = new ArrayList<>();
 
 		for(int i = 5; i < (5 + numPeers); i++)
 		{
@@ -71,7 +73,7 @@ public class HelloMessage {
 		sequenceNumber = sequenceNo;
 		helloInterval = helloIntervalIn;
 		numPeers = 0;
-		peers = new Vector<String>();		
+		peers = new ArrayList<>();		
 	}
 
 
@@ -95,7 +97,7 @@ public class HelloMessage {
 		for(int i = 0; i < numPeers; i++)
 		{
 			result += ";";
-			result += peers.elementAt(i);
+			result += peers.get(i);
 		}
 
 		return result;
@@ -125,10 +127,10 @@ public class HelloMessage {
 		if(numPeers > 0)
 		{
 			result += "The " + numPeers + " peers are :\n";
-			result += peers.elementAt(0);
+			result += peers.get(0);
 			for(int i = 1; i < peers.size(); i++)
 			{
-				result += ", " + peers.elementAt(i);
+				result += ", " + peers.get(i);
 			}
 			result+= ".\n";
 		}
