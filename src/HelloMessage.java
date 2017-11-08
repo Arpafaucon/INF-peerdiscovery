@@ -28,7 +28,7 @@ public class HelloMessage {
 	*	Constructor from a fromatted string
 	*	Initializarion with given peers
 	 */
-	public HelloMessage(String s) throws Exception {
+	public HelloMessage(String s) throws Exception  {
 		String slist[] = s.split(";");
 
 		if (slist.length < 5) {
