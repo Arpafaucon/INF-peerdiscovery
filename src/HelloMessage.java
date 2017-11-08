@@ -15,14 +15,13 @@ import java.util.regex.Matcher;
  * @author arpaf, AmaurX, Swann
  */
 public class HelloMessage {
-
 	String senderID;
 	int sequenceNumber;
 	int helloInterval;
 	int numPeers;
-	List<String> peers;
+	Vector<String> peers;
 
-	static public String HELLO = "HELLO";
+	static public String HELLO = "HELLO"; 
 
 
 	/*
