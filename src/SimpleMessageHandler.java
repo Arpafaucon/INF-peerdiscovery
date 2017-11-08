@@ -1,4 +1,5 @@
 
+
 public interface SimpleMessageHandler {
 	public void handleMessage(String m);
 	

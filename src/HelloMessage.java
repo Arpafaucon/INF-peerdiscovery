@@ -7,9 +7,9 @@
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
+import java.util.Vector;
 import java.util.regex.Pattern;
-
+import java.util.regex.Matcher;
 /**
  *
  * @author arpaf, AmaurX, Swann
@@ -38,8 +38,9 @@ public class HelloMessage {
 
 		Pattern helloPattern = Pattern.compile("(h|H)(e|E)(l|L){2}(o|O)");
 		Matcher helloMatcher = helloPattern.matcher(slist[0]);
-
-		if (!helloMatcher.matches()) {
+		
+		if(!helloMatcher.matches())
+		{
 			throw new Exception("Not a Hello message");
 		}
 
