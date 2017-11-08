@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -15,6 +14,31 @@ import java.util.regex.Matcher;
  * @author arpaf, AmaurX, Swann
  */
 public class HelloMessage {
+
+	public static class HelloException extends Exception {
+
+		public HelloException() {
+			super();
+		}
+
+		public HelloException(String message) {
+			super(message);
+		}
+
+		public HelloException(String message, Throwable cause) {
+			super(message, cause);
+		}
+
+		public HelloException(Throwable cause) {
+			super(cause);
+		}
+
+		public HelloException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+			super(message, cause, enableSuppression, writableStackTrace);
+		}
+	
+	}
+
 	String senderID;
 	int sequenceNumber;
 	int helloInterval;
@@ -28,19 +52,18 @@ public class HelloMessage {
 	*	Constructor from a fromatted string
 	*	Initializarion with given peers
 	 */
-	public HelloMessage(String s) throws Exception {
+	public HelloMessage(String s) throws HelloException {
 		String slist[] = s.split(";");
 
 		if (slist.length < 5) {
-			throw new Exception("Missing arguments in the hello string");
+			throw new HelloException("Missing arguments in the hello string");
 		}
 
 		Pattern helloPattern = Pattern.compile("(h|H)(e|E)(l|L){2}(o|O)");
 		Matcher helloMatcher = helloPattern.matcher(slist[0]);
-		
-		if(!helloMatcher.matches())
-		{
-			throw new Exception("Not a Hello message");
+
+		if (!helloMatcher.matches()) {
+			throw new HelloException("Not a Hello message");
 		}
 
 		senderID = slist[1];
@@ -49,7 +72,7 @@ public class HelloMessage {
 		numPeers = Integer.parseInt(slist[4]);
 
 		if (numPeers != (slist.length - 5)) {
-			throw new Exception("Wrong number of peer given...");
+			throw new HelloException("Wrong number of peer given...");
 		}
 
 		peers = new ArrayList<>();
@@ -72,7 +95,7 @@ public class HelloMessage {
 		peers = new ArrayList<>();
 	}
 
-	public String getHelloMessageAsEncodedString() throws Exception {
+	public String getHelloMessageAsEncodedString() throws HelloException {
 		String result = HELLO;
 		result += ";";
 		result += senderID;
@@ -84,7 +107,7 @@ public class HelloMessage {
 		result += numPeers;
 
 		if (numPeers != peers.size()) {
-			throw new Exception("numPeers isn't equal to peers.size().");
+			throw new HelloException("numPeers isn't equal to peers.size().");
 		}
 
 		for (int i = 0; i < numPeers; i++) {
@@ -95,9 +118,9 @@ public class HelloMessage {
 		return result;
 	}
 
-	public void addPeer(String peerID) throws Exception {
+	public void addPeer(String peerID) throws HelloException {
 		if (numPeers++ > 255) {
-			throw new Exception("Cannot add another peer : maximal number of peers reached");
+			throw new HelloException("Cannot add another peer : maximal number of peers reached");
 		}
 		peers.add(peerID);
 	}
