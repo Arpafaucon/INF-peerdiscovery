@@ -1,6 +1,5 @@
 package peertable;
 
-
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,13 +15,15 @@ import java.util.logging.Logger;
  * @author arpaf
  */
 public class PeerTable {
+
 	private final List<PeerRecord> table;
 	private Lock tableLock;
 	PeerTableUpdater peerTableUpdate;
 
 	public PeerTable() {
 		table = Collections.synchronizedList(new ArrayList<PeerRecord>());
-		
+		peerTableUpdate = new PeerTableUpdater(table, 1);
+
 	}
 
 	@Override
@@ -34,6 +35,15 @@ public class PeerTable {
 				.map((pr) -> pr.toString() + "\n")
 				.reduce(tableStr, String::concat);
 		return "PeerTable:" + tableStr;
+	}
+
+	public List<String> getPeerIdList() {
+		List<String> res = new ArrayList<>();
+		table.stream()
+				.forEach((PeerRecord p) -> {
+					res.add(p.peerID);
+				});
+		return res;
 	}
 
 }

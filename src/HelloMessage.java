@@ -94,6 +94,18 @@ public class HelloMessage {
 		numPeers = 0;
 		peers = new ArrayList<>();
 	}
+	
+	/*
+	*	Constructor from info
+	*	Initialization with peers
+	 */
+	public HelloMessage(String senderIdIn, int sequenceNo, int helloIntervalIn, List<String> peers) {
+		senderID = senderIdIn;
+		sequenceNumber = sequenceNo;
+		helloInterval = helloIntervalIn;
+		numPeers = 0;
+		this.peers = peers;
+	}
 
 	public String getHelloMessageAsEncodedString() throws HelloException {
 		String result = HELLO;
