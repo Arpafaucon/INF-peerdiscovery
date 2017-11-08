@@ -50,7 +50,7 @@ public class HelloMessage {
 
 	/*
 	*	Constructor from a fromatted string
-	*	Initializarion with given peers
+	*	Initialization with given peers
 	 */
 	public HelloMessage(String s) throws HelloException {
 		String slist[] = s.split(";");

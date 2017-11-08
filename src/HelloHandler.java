@@ -23,8 +23,8 @@ public class HelloHandler implements SimpleMessageHandler, Runnable {
     		try{
     			String msg = incoming.take();
     			myMuxDemux.send(msg);
-    		} catch (Exception e){
-    		}
+    		} catch (InterruptedException e){
+    		} 
     	}
     }
 
