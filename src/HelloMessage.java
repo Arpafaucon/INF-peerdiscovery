@@ -19,7 +19,7 @@ public class HelloMessage {
 	int sequenceNumber;
 	int helloInterval;
 	int numPeers;
-	Vector<String> peers;
+	List<String> peers;
 
 	static public String HELLO = "HELLO"; 
 
