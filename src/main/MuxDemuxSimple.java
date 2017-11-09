@@ -1,3 +1,7 @@
+package main;
+
+import handlers.HelloHandler;
+import handlers.SimpleMessageHandler;
 import java.util.concurrent.SynchronousQueue;
 import java.net.*;
 import java.io.*;
