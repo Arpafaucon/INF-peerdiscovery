@@ -21,6 +21,9 @@ public class HelloMessage {
 
 	private String senderID;
 	private int sequenceNumber;
+	/**
+	 * interval between messages, in s
+	 */
 	private int helloInterval;
 	private int numPeers;
 	private List<String> peers;
@@ -29,7 +32,7 @@ public class HelloMessage {
 
 	/*
 	*	Constructor from a fromatted string
-	*	Initialization with given peers
+	*	Initialization with given message
 	 */
 	public HelloMessage(String s) throws HelloException {
 		String slist[] = s.split(";");
