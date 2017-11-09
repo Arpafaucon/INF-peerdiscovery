@@ -1,3 +1,7 @@
+package handlers;
+
+import main.MuxDemuxSimple;
+
 
 
 public interface SimpleMessageHandler {

@@ -1,3 +1,9 @@
+package handlers;
+
+
+import hello.HelloMessage;
+import hello.HelloException;
+
 /**
  * Utility message handler who prints raw network messages
  *
@@ -11,7 +17,7 @@ public class DebugReceiver extends ThreadedMessageHandler implements SimpleMessa
 		try {
 			HelloMessage hm = new HelloMessage(m);
 			System.out.println("[HELLO]" + hm.toString());
-		} catch (HelloMessage.HelloException ex) {
+		} catch (HelloException ex) {
 
 		}
 	}

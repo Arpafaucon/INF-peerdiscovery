@@ -1,10 +1,15 @@
+package handlers;
 
 
+
+
+
+import main.MuxDemuxSimple;
 import java.util.concurrent.SynchronousQueue;
 
 public class HelloHandler implements SimpleMessageHandler, Runnable {
 
-	private SynchronousQueue<String> incoming = new SynchronousQueue<String>();
+	private SynchronousQueue<String> incoming = new SynchronousQueue<>();
 	private MuxDemuxSimple myMuxDemux = null;
 	
     public void setMuxDemux(MuxDemuxSimple md){

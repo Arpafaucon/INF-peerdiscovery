@@ -1,3 +1,11 @@
+package handlers;
+
+
+import hello.HelloException;
+import hello.HelloMessage;
+
+
+
 /**
  *
  * @author arpaf
@@ -9,7 +17,7 @@ public class HelloReceiver extends ThreadedMessageHandler implements SimpleMessa
 		try {
 			HelloMessage hm = new HelloMessage(msg);
 			System.out.println("HELLO RECEIVED]\n" + hm.toString());
-		} catch (HelloMessage.HelloException ex) {
+		} catch (HelloException ex) {
 		}
 	}
 
