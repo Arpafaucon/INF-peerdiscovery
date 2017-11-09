@@ -3,10 +3,12 @@ package handlers;
 
 import main.MuxDemuxSimple;
 import com.sun.corba.se.impl.protocol.giopmsgheaders.MessageHandler;
+import java.net.InetAddress;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import main.MessagePacket;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -17,15 +19,15 @@ import java.util.logging.Logger;
  *
  * @author arpaf
  */
-public abstract class ThreadedMessageHandler extends Thread implements SimpleMessageHandler {
+public abstract class ThreadedMessageHandler implements SimpleMessageHandler, Runnable {
 
 	private final static int CAPACITY = 10;
 	public MuxDemuxSimple mds;
-	private BlockingQueue<String> queue = new ArrayBlockingQueue<>(CAPACITY);
+	private BlockingQueue<MessagePacket> queue = new ArrayBlockingQueue<>(CAPACITY);
 
 	@Override
-	public void handleMessage(String m) {
-		queue.add(m);
+	public void handleMessage(MessagePacket msp) {
+		queue.add(msp);
 	}
 
 	@Override
@@ -36,10 +38,10 @@ public abstract class ThreadedMessageHandler extends Thread implements SimpleMes
 	@Override
 	public void run() {
 		while (true) {
-			String m;
+			MessagePacket msp;
 			try {
-				m = queue.take();
-				processMessage(m);
+				msp = queue.take();
+				processMessage(msp);
 			} catch (InterruptedException ex) {
 			} catch (Exception e){
 				System.err.println("[ERR] unhndled exception in ThreadedMessageHandler :" + e.getMessage());
@@ -48,6 +50,6 @@ public abstract class ThreadedMessageHandler extends Thread implements SimpleMes
 		}
 	}
 
-	abstract void processMessage(String msg);
+	abstract void processMessage(MessagePacket msp);
 
 }
