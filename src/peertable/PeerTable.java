@@ -15,15 +15,23 @@ public class PeerTable {
 
 	private final List<PeerRecord> table;
 	private Lock tableLock;
-	PeerTableUpdater peerTableUpdate;
 
 	public PeerTable() {
 		table = Collections.synchronizedList(new ArrayList<PeerRecord>());
-		peerTableUpdate = new PeerTableUpdater(table, 1);
-		//TODO : start in another function ?
-		peerTableUpdate.start();
 	}
-	
+
+	/**
+	 * remove obsolete entries
+	 */
+	private void cleanTable() {
+		table.stream()
+				//selecting old entries
+				.filter((peerRecord) -> (peerRecord.expirationTime > System.currentTimeMillis() / 1000))
+				//deleting them
+				.forEach((peerRecord) -> {
+					table.remove(peerRecord);
+				});
+	}
 
 	@Override
 	public String toString() {

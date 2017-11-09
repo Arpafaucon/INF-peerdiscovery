@@ -31,13 +31,7 @@ public class PeerTableUpdater extends Thread {
 				} catch (InterruptedException ex) {
 				}
 				//removing expired entry
-				table.stream()
-						//selecting old entries
-						.filter((peerRecord) -> (peerRecord.expirationTime > System.currentTimeMillis() / 1000))
-						//deleting them
-						.forEach((peerRecord) -> {
-							table.remove(peerRecord);
-						});
+				
 			}
 
 		}
