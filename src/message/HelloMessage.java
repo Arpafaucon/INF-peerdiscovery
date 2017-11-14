@@ -1,4 +1,4 @@
-package hello;
+package message;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -6,6 +6,7 @@ package hello;
  * and open the template in the editor.
  */
 
+import message.MessageException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -34,18 +35,18 @@ public class HelloMessage {
 	*	Constructor from a fromatted string
 	*	Initialization with given message
 	 */
-	public HelloMessage(String s) throws HelloException {
+	public HelloMessage(String s) throws MessageException {
 		String slist[] = s.split(";");
 
 		if (slist.length < 5) {
-			throw new HelloException("Missing arguments in the hello string");
+			throw new MessageException("Missing arguments in the hello string");
 		}
 
 		Pattern helloPattern = Pattern.compile("(h|H)(e|E)(l|L){2}(o|O)");
 		Matcher helloMatcher = helloPattern.matcher(slist[0]);
 
 		if (!helloMatcher.matches()) {
-			throw new HelloException("Not a Hello message");
+			throw new MessageException("Not a Hello message");
 		}
 
 		senderID = slist[1];
@@ -54,7 +55,7 @@ public class HelloMessage {
 		numPeers = Integer.parseInt(slist[4]);
 
 		if (numPeers != (slist.length - 5)) {
-			throw new HelloException("Wrong number of peer given...");
+			throw new MessageException("Wrong number of peer given...");
 		}
 
 		peers = new ArrayList<>();
@@ -89,7 +90,7 @@ public class HelloMessage {
 		this.peers = peers;
 	}
 
-	public String getHelloMessageAsEncodedString() throws HelloException {
+	public String getHelloMessageAsEncodedString() throws MessageException {
 		String result = HELLO;
 		result += ";";
 		result += senderID;
@@ -101,7 +102,7 @@ public class HelloMessage {
 		result += numPeers;
 
 		if (numPeers != peers.size()) {
-			throw new HelloException("numPeers isn't equal to peers.size().");
+			throw new MessageException("numPeers isn't equal to peers.size().");
 		}
 
 		for (int i = 0; i < numPeers; i++) {
@@ -112,9 +113,9 @@ public class HelloMessage {
 		return result;
 	}
 
-	public void addPeer(String peerID) throws HelloException {
+	public void addPeer(String peerID) throws MessageException {
 		if (numPeers++ > 255) {
-			throw new HelloException("Cannot add another peer : maximal number of peers reached");
+			throw new MessageException("Cannot add another peer : maximal number of peers reached");
 		}
 		peers.add(peerID);
 	}
