@@ -3,12 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package PeerDiscovery;
+package debug;
 
 /**
  *
  * @author arpaf
  */
-public class PeerTable {
-	
+public interface DebugStateMessage {
+	/**
+	 * reads state of the desired value and dumps it as a string
+	 * @return 
+	 */
+	public String readState();
 }
