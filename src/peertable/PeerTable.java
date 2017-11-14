@@ -1,6 +1,6 @@
 package peertable;
 
-import hello.HelloMessage;
+import message.HelloMessage;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,7 +86,7 @@ public class PeerTable {
 //					res.add(p.peerID);
 //				});
 //		return res;
-		return new ArrayList<String>(peerTable.keySet());
+		return new ArrayList<>(peerTable.keySet());
 	}
 
 }

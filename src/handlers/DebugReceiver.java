@@ -1,8 +1,8 @@
 package handlers;
 
 
-import hello.HelloMessage;
-import hello.HelloException;
+import message.HelloMessage;
+import message.MessageException;
 import main.MessagePacket;
 
 /**
@@ -19,7 +19,7 @@ public class DebugReceiver extends ThreadedMessageHandler
 		try {
 			HelloMessage hm = new HelloMessage(msp.msg);
 			System.out.println("[HELLO]" + hm.toString());
-		} catch (HelloException ex) {
+		} catch (MessageException ex) {
 
 		}
 	}

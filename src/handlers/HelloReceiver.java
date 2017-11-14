@@ -1,8 +1,8 @@
 package handlers;
 
 
-import hello.HelloException;
-import hello.HelloMessage;
+import message.MessageException;
+import message.HelloMessage;
 import main.MessagePacket;
 import peertable.PeerTable;
 
@@ -27,7 +27,7 @@ public class HelloReceiver extends ThreadedMessageHandler implements SimpleMessa
 			HelloMessage hm = new HelloMessage(msp.msg);
 			System.out.println("HELLO RECEIVED]\n" + hm.toString());
 			peerTable.updatePeer(hm, msp.address, msp.time);
-		} catch (HelloException ex) {
+		} catch (MessageException ex) {
 		}
 	}
 

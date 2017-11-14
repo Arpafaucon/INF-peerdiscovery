@@ -27,7 +27,7 @@ public abstract class ThreadedMessageHandler implements SimpleMessageHandler, Ru
 
 	@Override
 	public void handleMessage(MessagePacket msp) {
-		queue.add(msp);
+		queue.offer(msp);
 	}
 
 	@Override
