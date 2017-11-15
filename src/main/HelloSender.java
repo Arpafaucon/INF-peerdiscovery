@@ -27,7 +27,8 @@ public class HelloSender implements Runnable {
 	public void run() {
 		while (true) {
 			try {
-				m = new HelloMessage(Main.ID, 0, Main.SEND_HELLO_INTERVAL);
+				//for question 2-3
+				m = new HelloMessage(Main.ID, Database.getInternalDatabase().getSequenceNumber(), Main.SEND_HELLO_INTERVAL);
 				Thread.sleep(1000);
 
 			} catch (InterruptedException ex) {

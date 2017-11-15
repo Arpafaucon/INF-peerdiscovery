@@ -176,8 +176,7 @@ public class DebugServer {
 	 * Starts a multithreaded server
 	 *
 	 * @param port     port to listen to
-	 * @param poolSize size of of the thread pool : at most
-	 *                 <code>poolSize</code> workers run simultaneously
+	 * @param states	the intent states to bind
 	 */
 	public static void threadedServer(int port, Map<String, DebugStateMessage> states) {
 		final AtomicInteger workerCount = new AtomicInteger(0);
@@ -186,7 +185,7 @@ public class DebugServer {
 		boolean workerAvailable;
 		try {
 			ServerSocket ss = new ServerSocket(port);
-			System.out.println("Threaded Debug server started on port " + port + " with intents\n " + intents.keySet().toString());
+			System.out.println("Threaded Debug server started on port " + port + " with intents:  " + intents.keySet().toString());
 			boolean done = false;
 //			ConnectionHandler handler = new ConnectionHandler();
 			while (!done) {

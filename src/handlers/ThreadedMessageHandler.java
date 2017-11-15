@@ -22,7 +22,7 @@ import main.MessagePacket;
 public abstract class ThreadedMessageHandler implements SimpleMessageHandler, Runnable {
 
 	private final static int CAPACITY = 10;
-	public MuxDemuxSimple mds;
+	private MuxDemuxSimple mds;
 	private BlockingQueue<MessagePacket> queue = new ArrayBlockingQueue<>(CAPACITY);
 
 	@Override
@@ -33,6 +33,10 @@ public abstract class ThreadedMessageHandler implements SimpleMessageHandler, Ru
 	@Override
 	public void setMuxDemux(MuxDemuxSimple md) {
 		mds = md;
+	}
+
+	public MuxDemuxSimple getMuxDemux() {
+		return mds;
 	}
 
 	@Override
