@@ -1,14 +1,11 @@
 package debug;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
@@ -70,12 +67,12 @@ public class DebugServer {
 //				print("valid request with " + path);
 
 				// getting rest of headers
-				String headers = "";
+				StringBuilder headers = new StringBuilder();
 				while ((line = stream.readLine()) != null && !line.equals("")) {
-					headers += line + "\n";
+					headers.append(line).append("\n");
 				}
 				//checking if Host header is well formed
-				final Matcher hostMatcher = HOST_PATTERN.matcher(headers);
+				final Matcher hostMatcher = HOST_PATTERN.matcher(headers.toString());
 //			print(headers);
 				if (!hostMatcher.find()) {
 					error("Malformed Host header");
@@ -188,7 +185,7 @@ public class DebugServer {
 			System.out.println("Threaded Debug server started on port " + port + " with intents:  " + intents.keySet().toString());
 			boolean done = false;
 //			ConnectionHandler handler = new ConnectionHandler();
-			while (!done) {
+			while (!done && !Thread.interrupted()) {
 				workerAvailable = (workerCount.get() < POOL_SIZE);
 				if (workerAvailable) {
 //					print("worker available");

@@ -16,6 +16,10 @@ public class DebugDatabaseReader implements DebugStateMessage{
 
 	Database database;
 
+	/**
+	 * Creating a initialized database
+	 * @param database 
+	 */
 	public DebugDatabaseReader(Database database) {
 		this.database = database;
 	}

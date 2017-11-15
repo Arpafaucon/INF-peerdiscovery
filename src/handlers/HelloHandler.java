@@ -1,8 +1,9 @@
 package handlers;
 
-import java.net.InetAddress;
 import main.MuxDemuxSimple;
 import java.util.concurrent.SynchronousQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import main.MessagePacket;
 
 /**
@@ -13,7 +14,7 @@ import main.MessagePacket;
 @Deprecated
 public class HelloHandler implements SimpleMessageHandler, Runnable {
 
-	private SynchronousQueue<String> incoming = new SynchronousQueue<>();
+	private final SynchronousQueue<String> incoming = new SynchronousQueue<>();
 	private MuxDemuxSimple myMuxDemux = null;
 
 	@Override
@@ -25,10 +26,12 @@ public class HelloHandler implements SimpleMessageHandler, Runnable {
 	public void handleMessage(MessagePacket msp) {
 		try {
 			incoming.put(msp.msg);
-		} catch (Exception e) {
+		} catch (InterruptedException ex) {
 		}
 	}
 
+	
+	@Override
 	public void run() {
 		while (true) {
 			try {

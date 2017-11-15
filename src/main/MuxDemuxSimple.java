@@ -22,6 +22,8 @@ public class MuxDemuxSimple implements Runnable {
 	private BufferedReader in;
 	private final List<SimpleMessageHandler> myMessageHandlers;
 	private final ArrayBlockingQueue<String> outgoing = new ArrayBlockingQueue<>(10);
+	
+	
 	private Runnable senderDaemon = new Runnable() {
 		@Override
 		public void run() {
@@ -38,7 +40,7 @@ public class MuxDemuxSimple implements Runnable {
 	};
 //	private SynchronousQueue<String> ouCtgoing = new SynchronousQueue<String>();
 
-	MuxDemuxSimple(List<SimpleMessageHandler> handlers, DatagramSocket s) {
+	private MuxDemuxSimple(List<SimpleMessageHandler> handlers, DatagramSocket s) {
 		mySocket = s;
 		try {
 			mySocket.setBroadcast(true);

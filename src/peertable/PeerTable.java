@@ -52,7 +52,7 @@ public class PeerTable {
 
 	public synchronized void updatePeer(HelloMessage hm, InetAddress address, long time) {
 		cleanTable();
-		String peerId = hm.getSenderID();
+		String peerId = hm.getSenderId();
 		if (peerId.equals(main.Main.ID)) {
 			return;
 		}
@@ -68,7 +68,7 @@ public class PeerTable {
 		} else {
 			//registering peer
 			//!helloInterval is in s
-			pr = new PeerRecord(peerId, address, -1, hm.getHelloInterval() * 1000 + time, PeerState.HEARD);
+			pr = new PeerRecord(peerId, address, -1, hm.getHelloInterval() * 1000L + time, PeerState.HEARD);
 			peerTable.put(peerId, pr);
 		}
 	}

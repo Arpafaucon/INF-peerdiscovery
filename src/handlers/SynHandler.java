@@ -8,12 +8,9 @@ package handlers;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import main.Database;
 import main.Main;
 import main.MessagePacket;
-import main.MuxDemuxSimple;
 import message.ListMessage;
 import message.MessageException;
 import message.SynMessage;
@@ -34,7 +31,7 @@ public class SynHandler extends ThreadedMessageHandler{
 	 * for the moment, a very naive implementation responds to all requests if 
 	 * they are legitimate (no checks of previous ones);
 	 */
-	private Map<String, Integer> sequenceNb = new HashMap<>();
+	private final Map<String, Integer> sequenceNb = new HashMap<>();
 	
 	
 	@Override

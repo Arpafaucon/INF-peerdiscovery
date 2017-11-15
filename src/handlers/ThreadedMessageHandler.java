@@ -1,14 +1,12 @@
 package handlers;
 
 
+import com.sun.istack.internal.logging.Logger;
 import main.MuxDemuxSimple;
-import com.sun.corba.se.impl.protocol.giopmsgheaders.MessageHandler;
-import java.net.InetAddress;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import main.MessagePacket;
+import sun.util.logging.resources.logging;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -23,11 +21,14 @@ public abstract class ThreadedMessageHandler implements SimpleMessageHandler, Ru
 
 	private final static int CAPACITY = 10;
 	private MuxDemuxSimple mds;
-	private BlockingQueue<MessagePacket> queue = new ArrayBlockingQueue<>(CAPACITY);
+	private final BlockingQueue<MessagePacket> queue = new ArrayBlockingQueue<>(CAPACITY);
 
 	@Override
 	public void handleMessage(MessagePacket msp) {
-		queue.offer(msp);
+		if(queue.offer(msp)){
+			//exception when putting element
+			Logger.getLogger(ThreadedMessageHandler.class).info("dropped message");
+		}
 	}
 
 	@Override

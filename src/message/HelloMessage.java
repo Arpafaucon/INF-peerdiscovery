@@ -6,7 +6,6 @@ package message;
  * and open the template in the editor.
  */
 
-import message.MessageException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -20,7 +19,7 @@ public class HelloMessage {
 	
 	private static final String HELLO = "HELLO"; 
 
-	private String senderID;
+	private String senderId;
 	private int sequenceNumber;
 	/**
 	 * interval between messages, in s
@@ -49,7 +48,7 @@ public class HelloMessage {
 			throw new MessageException("Not a Hello message");
 		}
 
-		senderID = slist[1];
+		senderId = slist[1];
 		sequenceNumber = Integer.parseInt(slist[2]);
 		helloInterval = Integer.parseInt(slist[3]);
 		numPeers = Integer.parseInt(slist[4]);
@@ -71,7 +70,7 @@ public class HelloMessage {
 	*	Initialization with no peers
 	 */
 	public HelloMessage(String senderIdIn, int sequenceNo, int helloIntervalIn) {
-		senderID = senderIdIn;
+		senderId = senderIdIn;
 		sequenceNumber = sequenceNo;
 		helloInterval = helloIntervalIn;
 		numPeers = 0;
@@ -83,7 +82,7 @@ public class HelloMessage {
 	*	Initialization with peers
 	 */
 	public HelloMessage(String senderIdIn, int sequenceNo, int helloIntervalIn, List<String> peers) {
-		senderID = senderIdIn;
+		senderId = senderIdIn;
 		sequenceNumber = sequenceNo;
 		helloInterval = helloIntervalIn;
 		numPeers = 0;
@@ -91,26 +90,20 @@ public class HelloMessage {
 	}
 
 	public String getHelloMessageAsEncodedString() throws MessageException {
-		String result = HELLO;
-		result += ";";
-		result += senderID;
-		result += ";";
-		result += sequenceNumber;
-		result += ";";
-		result += helloInterval;
-		result += ";";
-		result += numPeers;
+		String result = String.format("HELLO;%s;%s;%d;%d", 
+				senderId, sequenceNumber, helloInterval, numPeers);
 
 		if (numPeers != peers.size()) {
 			throw new MessageException("numPeers isn't equal to peers.size().");
 		}
 
+		StringBuilder res = new StringBuilder(result);
 		for (int i = 0; i < numPeers; i++) {
-			result += ";";
-			result += peers.get(i);
+			res.append(";").append(peers.get(i));
+//			result += ";";
+//			result += peers.get(i);
 		}
-
-		return result;
+		return res.toString();
 	}
 
 	public void addPeer(String peerID) throws MessageException {
@@ -122,7 +115,7 @@ public class HelloMessage {
 
 	@Override
 	public String toString() {
-		String result = "The sender is " + senderID + "\n";
+		String result = "The sender is " + senderId + "\n";
 		result += "Senquence number is " + sequenceNumber;
 		result += " and HelloInterval is " + helloInterval + "\n";
 
@@ -143,9 +136,9 @@ public class HelloMessage {
 		return result;
 	}
 
-	public String getSenderID() {
+	public String getSenderId() {
 		//necessary to identify the peer who sent the message in the peerTable when receiving
-		return senderID;
+		return senderId;
 	}
 
 	public int getSequenceNumber() {

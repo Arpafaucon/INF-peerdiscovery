@@ -10,8 +10,7 @@ import main.MessagePacket;
  *
  * @author arpaf
  */
-public class DebugReceiver extends ThreadedMessageHandler 
-		implements SimpleMessageHandler {
+public class DebugReceiver extends ThreadedMessageHandler  {
 
 	@Override
 	void processMessage(MessagePacket msp) {

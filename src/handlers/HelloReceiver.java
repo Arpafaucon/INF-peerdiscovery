@@ -13,10 +13,14 @@ import peertable.PeerTable;
  * display them, and update the peertable accordingly
  * @author arpaf
  */
-public class HelloReceiver extends ThreadedMessageHandler implements SimpleMessageHandler {
+public class HelloReceiver extends ThreadedMessageHandler {
 
 	PeerTable peerTable;
 
+	/**
+	 *
+	 * @param peerTable
+	 */
 	public HelloReceiver(PeerTable peerTable) {
 		this.peerTable = peerTable;
 	}
