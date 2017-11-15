@@ -68,10 +68,20 @@ public class SynMessage {
 
 	@Override
 	public String toString() {
-		return "SynMessage{" + "senderId=" + senderId + ", peerId=" + peerId 
+		return "SynMessage{" + "senderId=" + senderId + ", peerId=" + peerId
 				+ ", sequenceNb=" + sequenceNb + ", trailing=" + trailing + '}';
 	}
-	
-	
+
+	public String getSenderId() {
+		return senderId;
+	}
+
+	public String getPeerId() {
+		return peerId;
+	}
+
+	public int getSequenceNb() {
+		return sequenceNb;
+	}
 
 }

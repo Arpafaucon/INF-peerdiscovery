@@ -18,6 +18,10 @@ public enum PeerState {
 	 */
 	SYNCHRONISED,
 	/**
+	 * we're trying to sync seq#
+	 */
+	SYNCING,
+	/**
 	 * peer entry has timed out
 	 * unused for now; entry is directly removed
 	 */

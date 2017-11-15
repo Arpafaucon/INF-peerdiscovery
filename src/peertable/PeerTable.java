@@ -3,25 +3,31 @@ package peertable;
 import message.HelloMessage;
 import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
 
 /**
  * PeerTable class tracks state of all peers, and periodically update them
  * according to messages or timeouts
- *
+ * 
+ * Sync is done with synchronized blocks at function level, and using a sync hashmap
  * @author arpaf
  */
 public class PeerTable {
 
 //	private final List<PeerRecord> table;
 	private final ConcurrentHashMap<String, PeerRecord> peerTable;
+	private static PeerTable table;
 //	private Lock tableLock;
 
-	public PeerTable() {
+	public static synchronized PeerTable getTable() {
+		if (table == null) {
+			table = new PeerTable();
+		}
+		return table;
+	}
+
+	private PeerTable() {
 //		table = Collections.synchronizedList(new ArrayList<PeerRecord>());
 		peerTable = new ConcurrentHashMap();
 	}
@@ -29,7 +35,7 @@ public class PeerTable {
 	/**
 	 * remove obsolete entries
 	 */
-	private void cleanTable() {
+	private synchronized void cleanTable() {
 		peerTable.forEach((peerId, record) -> {
 			if (record.expirationTime > System.currentTimeMillis() / 1000) {
 				peerTable.remove(peerId);
@@ -43,18 +49,18 @@ public class PeerTable {
 //					table.remove(peerRecord);
 //				});
 	}
-	
-	public void updatePeer(HelloMessage hm, InetAddress address, long time){
+
+	public synchronized void updatePeer(HelloMessage hm, InetAddress address, long time) {
 		cleanTable();
 		String peerId = hm.getSenderID();
-		if(peerId.equals(main.Main.ID)){
+		if (peerId.equals(main.Main.ID)) {
 			return;
 		}
 		PeerRecord pr = peerTable.get(peerId);
-		if(pr != null){
+		if (pr != null) {
 			//peer already registered
 			pr.expirationTime = time + hm.getHelloInterval();
-			if(hm.getSequenceNumber() != pr.peerSeqNum){
+			if (hm.getSequenceNumber() != pr.peerSeqNum) {
 				pr.peerState = PeerState.INCONSISTENT;
 			}
 			//updating address & other data
@@ -62,13 +68,13 @@ public class PeerTable {
 		} else {
 			//registering peer
 			//!helloInterval is in s
-			pr = new PeerRecord(peerId, address, -1, hm.getHelloInterval()*1000 + time, PeerState.HEARD);
+			pr = new PeerRecord(peerId, address, -1, hm.getHelloInterval() * 1000 + time, PeerState.HEARD);
 			peerTable.put(peerId, pr);
 		}
 	}
 
 	@Override
-	public String toString() {
+	public synchronized String toString() {
 		String tableStr = "";
 		//I admit that it's a bit overkill to use streams
 		//in order only to print all elements...
@@ -79,7 +85,7 @@ public class PeerTable {
 		return "PeerTable:\n" + tableStr;
 	}
 
-	public List<String> getPeerIdList() {
+	public synchronized List<String> getPeerIdList() {
 //		List<String> res = new ArrayList<>();
 //		table.stream()
 //				.forEach((PeerRecord p) -> {
