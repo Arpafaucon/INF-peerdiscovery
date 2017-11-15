@@ -23,7 +23,12 @@ public class Main {
 	public static final int SEND_HELLO_INTERVAL = 2;
 	public static final int CHUNK_SIZE = 255;
 	public static final int SOCKET_PORT = 4242;
+	
+	public static final int HANDLER_CAPACITY = 20;
+	
 	public static final int DEBUG_PORT = 4243;
+	public static final boolean DEBUG_PRINT_RAW = true;
+	public static final boolean DEBUG_PRINT_DROPPED = false;
 
 	private static final Level LOG_LEVEL = Level.FINE;
 	private static final Logger logger = Logger.getLogger(Main.class.getName());
@@ -43,6 +48,8 @@ public class Main {
 			DebugReceiver debugReceiver = new DebugReceiver();
 			handlers.add(helloReceiver);
 			handlers.add(debugReceiver);
+			helloReceiver.start();
+			debugReceiver.start();
 
 			//handlers[2] = new LSAHandler();
 			MuxDemuxSimple muxDemuxSimple = new MuxDemuxSimple(handlers, socket);

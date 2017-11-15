@@ -40,7 +40,7 @@ public class MuxDemuxSimple implements Runnable {
 	};
 //	private SynchronousQueue<String> ouCtgoing = new SynchronousQueue<String>();
 
-	private MuxDemuxSimple(List<SimpleMessageHandler> handlers, DatagramSocket s) {
+	public MuxDemuxSimple(List<SimpleMessageHandler> handlers, DatagramSocket s) {
 		mySocket = s;
 		try {
 			mySocket.setBroadcast(true);

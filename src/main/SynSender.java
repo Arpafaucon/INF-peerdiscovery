@@ -17,9 +17,9 @@ public class SynSender extends Thread{
 
 	
 	
-	
 	@Override
 	public void run() {
+		
 	}
 
 }

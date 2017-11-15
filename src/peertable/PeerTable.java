@@ -9,8 +9,10 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * PeerTable class tracks state of all peers, and periodically update them
  * according to messages or timeouts
- * 
- * Sync is done with synchronized blocks at function level, and using a sync hashmap
+ *
+ * Sync is done with synchronized blocks at function level, and using a sync
+ * hashmap
+ *
  * @author arpaf
  */
 public class PeerTable {
@@ -37,7 +39,7 @@ public class PeerTable {
 	 */
 	private synchronized void cleanTable() {
 		peerTable.forEach((peerId, record) -> {
-			if (record.expirationTime > System.currentTimeMillis() / 1000) {
+			if (record.expirationTime < System.currentTimeMillis() / 1000) {
 				peerTable.remove(peerId);
 			}
 		});
@@ -68,7 +70,7 @@ public class PeerTable {
 		} else {
 			//registering peer
 			//!helloInterval is in s
-			pr = new PeerRecord(peerId, address, -1, hm.getHelloInterval() * 1000L + time, PeerState.HEARD);
+			pr = new PeerRecord(peerId, address, hm.getSequenceNumber(), hm.getHelloInterval() * 1000L + time, PeerState.HEARD);
 			peerTable.put(peerId, pr);
 		}
 	}
@@ -80,9 +82,10 @@ public class PeerTable {
 		//in order only to print all elements...
 		// but the result is the same and that makes me practice !
 		tableStr = peerTable.entrySet().stream()
-				.map((record) -> record.getValue().toString())
+				.map((record) -> record.getValue().toString() + "\n")
 				.reduce(tableStr, String::concat);
-		return "PeerTable:\n" + tableStr;
+		return "PeerTable:("+ peerTable.size()+")\n" + tableStr;
+//		return peerTable.toString();
 	}
 
 	public synchronized List<String> getPeerIdList() {

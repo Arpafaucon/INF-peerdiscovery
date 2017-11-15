@@ -14,7 +14,7 @@ import main.Database;
  */
 public class DebugDatabaseReader implements DebugStateMessage{
 
-	Database database;
+	private Database database;
 
 	/**
 	 * Creating a initialized database

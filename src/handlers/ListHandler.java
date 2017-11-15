@@ -14,7 +14,7 @@ import main.MessagePacket;
 public class ListHandler extends ThreadedMessageHandler{
 
 	@Override
-	void processMessage(MessagePacket msp) {
+	protected void processMessage(MessagePacket msp) {
 		String mes = msp.msg;
 		System.out.println("mes : " + mes);
 		

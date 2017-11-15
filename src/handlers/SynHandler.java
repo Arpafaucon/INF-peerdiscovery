@@ -35,7 +35,7 @@ public class SynHandler extends ThreadedMessageHandler{
 	
 	
 	@Override
-	void processMessage(MessagePacket msp) {
+	protected void processMessage(MessagePacket msp) {
 		try{
 			SynMessage sm = SynMessage.parse(msp.msg);
 			//legitimacy checks

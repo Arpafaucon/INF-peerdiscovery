@@ -94,7 +94,7 @@ public class ListMessage {
 
 	@Override
 	public String toString() {
-		return "ListMessage{" + "senderId=" + senderId + ", peerId=" + peerId 
+		return "List{" + "senderId=" + senderId + ", peerId=" + peerId 
 				+ ", sequenceNb=" + sequenceNb + ", totalParts=" + totalParts 
 				+ ", partNb=" + partNb + ", data=" + data + '}';
 	}

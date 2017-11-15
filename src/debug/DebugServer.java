@@ -32,17 +32,17 @@ public class DebugServer {
 	 */
 	private static class ConnectionHandler {
 
-		static final int STATUS_OK = 200;
-		static final int STATUS_BAD_REQUEST = 400;
-		static final int STATUS_NOT_FOUND = 404;
-		static final int STATUS_INTERNAL_ERROR = 500;
+		private static final int STATUS_OK = 200;
+		private static final int STATUS_BAD_REQUEST = 400;
+		private static final int STATUS_NOT_FOUND = 404;
+		private static final int STATUS_INTERNAL_ERROR = 500;
 
-		static final String HEADLINE_HEADER = "^GET (/[\\d\\w.-_/]*) HTTP/1.1$";
-		static final Pattern HEADLINE_PATTERN = Pattern.compile(HEADLINE_HEADER);
-		static final String HOST_HEADER = "^Host *: *(.*)$";
-		static final Pattern HOST_PATTERN = Pattern.compile(HOST_HEADER, Pattern.MULTILINE);
-		static final String VALID_PATH = "/([\\w.-_]*)";
-		static final Pattern VALID_PATH_PATTERN = Pattern.compile(VALID_PATH);
+		private static final String HEADLINE_HEADER = "^GET (/[\\d\\w.-_/]*) HTTP/1.1$";
+		private static final Pattern HEADLINE_PATTERN = Pattern.compile(HEADLINE_HEADER);
+		private static final String HOST_HEADER = "^Host *: *(.*)$";
+		private static final Pattern HOST_PATTERN = Pattern.compile(HOST_HEADER, Pattern.MULTILINE);
+		private static final String VALID_PATH = "/([\\w.-_]*)";
+		private static final Pattern VALID_PATH_PATTERN = Pattern.compile(VALID_PATH);
 
 		/**
 		 * Main method.

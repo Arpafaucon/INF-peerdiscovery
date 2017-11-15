@@ -18,23 +18,19 @@ public class HelloMessage {
 
 	
 	private static final String HELLO = "HELLO"; 
+	private static final int MAX_HELLO_INTERVAL = 255;
+//	private static final Pattern HELLO_PATTERN = Pattern.compile("HELLO;(\\w+);")
 
-	private String senderId;
-	private int sequenceNumber;
+	private final String senderId;
+	private final int sequenceNumber;
 	/**
 	 * interval between messages, in s
 	 */
-	private int helloInterval;
+	private final int helloInterval;
 	private int numPeers;
-	private List<String> peers;
+	private final List<String> peers;
 
-
-
-	/*
-	*	Constructor from a fromatted string
-	*	Initialization with given message
-	 */
-	public HelloMessage(String s) throws MessageException {
+	public static HelloMessage parse(String s) throws MessageException{
 		String slist[] = s.split(";");
 
 		if (slist.length < 5) {
@@ -48,22 +44,27 @@ public class HelloMessage {
 			throw new MessageException("Not a Hello message");
 		}
 
-		senderId = slist[1];
-		sequenceNumber = Integer.parseInt(slist[2]);
-		helloInterval = Integer.parseInt(slist[3]);
-		numPeers = Integer.parseInt(slist[4]);
+		String senderId = slist[1];
+		int sequenceNumber = Integer.parseInt(slist[2]);
+		int helloInterval = Integer.parseInt(slist[3]);
+		int numPeers = Integer.parseInt(slist[4]);
+		
+		if(helloInterval < 0 || helloInterval > MAX_HELLO_INTERVAL){
+			throw new MessageException("Invalid hello Interval");
+		}
 
 		if (numPeers != (slist.length - 5)) {
 			throw new MessageException("Wrong number of peer given...");
 		}
 
-		peers = new ArrayList<>();
+		List<String> peers = new ArrayList<>();
 
 		for (int i = 5; i < (5 + numPeers); i++) {
 			peers.add(slist[i]);
 		}
+		
+		return new HelloMessage(senderId, sequenceNumber, helloInterval, peers);
 	}
-
 
 	/*
 	*	Constructor from info
@@ -113,8 +114,7 @@ public class HelloMessage {
 		peers.add(peerID);
 	}
 
-	@Override
-	public String toString() {
+	public String toVerboseString() {
 		String result = "The sender is " + senderId + "\n";
 		result += "Senquence number is " + sequenceNumber;
 		result += " and HelloInterval is " + helloInterval + "\n";
@@ -150,4 +150,11 @@ public class HelloMessage {
 		//necessary for knowing at which frequency the messages are to be sent
 		return helloInterval;
 	}
+
+	@Override
+	public String toString() {
+		return "HELLO{" + "senderId=" + senderId + ", sequenceNumber=" + sequenceNumber + ", helloInterval=" + helloInterval + ", numPeers=" + numPeers + ", peers=" + peers + '}';
+	}
+	
+	
 }

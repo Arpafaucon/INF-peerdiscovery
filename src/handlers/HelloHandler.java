@@ -2,8 +2,6 @@ package handlers;
 
 import main.MuxDemuxSimple;
 import java.util.concurrent.SynchronousQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import main.MessagePacket;
 
 /**

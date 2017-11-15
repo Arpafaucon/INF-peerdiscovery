@@ -29,7 +29,7 @@ public class HelloSender implements Runnable {
 			try {
 				//for question 2-3
 				m = new HelloMessage(Main.ID, Database.getInternalDatabase().getSequenceNumber(), Main.SEND_HELLO_INTERVAL);
-				Thread.sleep(1000);
+				Thread.sleep(Main.SEND_HELLO_INTERVAL * 1000);
 
 			} catch (InterruptedException ex) {
 			}
