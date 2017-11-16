@@ -1,4 +1,4 @@
-package main;
+package sender;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -8,6 +8,9 @@ package main;
 import message.HelloMessage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import database.Database;
+import main.Main;
+import main.MuxDemuxSimple;
 
 /**
  *
@@ -25,7 +28,7 @@ public class HelloSender implements Runnable {
 
 	@Override
 	public void run() {
-		while (true) {
+		while (!Thread.interrupted()) {
 			try {
 				//for question 2-3
 				m = new HelloMessage(Main.ID, Database.getInternalDatabase().getSequenceNumber(), Main.SEND_HELLO_INTERVAL);
@@ -33,8 +36,8 @@ public class HelloSender implements Runnable {
 
 			} catch (InterruptedException ex) {
 			}
-			muxDemuxSimple.send(m.toString());
-			logger.log(Level.FINE, "sent hello : {0}", m.toString());
+			muxDemuxSimple.send(m.toEncodedString());
+//			logger.log(Level.FINE, "sent hello : {0}", m.toEncodedString());
 		}
 	}
 

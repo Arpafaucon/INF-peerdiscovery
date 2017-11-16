@@ -1,7 +1,9 @@
-package main;
+package database;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Database handling class
@@ -12,7 +14,7 @@ import java.util.List;
 public class Database {
 
 	private static Database internalBase;
-	private static List<Database> peerBase;
+	private static Map<String, Database> peerBase;
 
 	/**
 	 * get internal singleton
@@ -21,7 +23,7 @@ public class Database {
 	 */
 	public static synchronized Database getInternalDatabase() {
 		if (internalBase == null) {
-			internalBase = new Database();
+			internalBase = new Database("", 0, main.Main.ID);
 		}
 		return internalBase;
 	}
@@ -31,12 +33,30 @@ public class Database {
 	 *
 	 * @return
 	 */
-	public static synchronized List<Database> getPeerDatabases() {
+	private static synchronized Map<String, Database> getPeerDatabases() {
 		if (peerBase == null) {
-			peerBase = new ArrayList<>();
+			peerBase = new ConcurrentHashMap<>();
 		}
 		return peerBase;
 	}
+	
+	/**
+	 * get specific peer Database
+	 * 
+	 * @param peerId
+	 * @return non-null base
+	 */
+	public static synchronized Database getPeerBase(String peerId){
+		return getPeerDatabases().getOrDefault(peerId, new Database(peerId));
+	}
+	public synchronized static String getSummary(){
+		return String.format("== Internal ==%n%s%n"
+				+ "== External ==%n%s%n",
+				Database.getInternalDatabase().toString(),
+				Database.getPeerDatabases().toString());
+	}
+	
+	
 
 	/**
 	 * content of the database
@@ -47,14 +67,20 @@ public class Database {
 	 * database version index
 	 */
 	private int sequenceNumber;
+	
+	/**
+	 * Peer ID corresponding to the database
+	 */
+	private final String peerId;
 
-	private Database(String data) {
-		this.sequenceNumber = 0;
+	private Database(String data, int sequenceNumber, String peerId) {
 		this.data = data;
+		this.sequenceNumber = sequenceNumber;
+		this.peerId = peerId;
 	}
-
-	private Database() {
-		this("");
+	
+	private Database(String peerId){
+		this("", -1, peerId);
 	}
 
 	
@@ -84,6 +110,10 @@ public class Database {
 	public synchronized void setData(String data) {
 		this.data = data;
 	}
+	
+	public synchronized void incrSeqNb(){
+		this.sequenceNumber++;
+	}
 
 	public synchronized int getSequenceNumber() {
 		return sequenceNumber;
@@ -92,5 +122,6 @@ public class Database {
 	public synchronized void setSequenceNumber(int sequenceNumber) {
 		this.sequenceNumber = sequenceNumber;
 	}
+	
 
 }

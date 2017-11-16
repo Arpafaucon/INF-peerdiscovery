@@ -5,25 +5,23 @@
  */
 package debug;
 
-import peertable.PeerTable;
+import handlers.ListHandler;
 
 /**
  *
  * @author arpaf
  */
-public class DebugPeerTableReader implements DebugStateMessage{
+public class DebugListReader implements DebugStateMessage{
+	ListHandler lh;
 
-	peertable.PeerTable table;
-
-	public DebugPeerTableReader(PeerTable table) {
-		this.table = table;
+	public DebugListReader(ListHandler lh) {
+		this.lh = lh;
 	}
+
 	
 	@Override
 	public String readState() {
-		String res = table.toString();
-//		System.out.println("DPTR: " + res);
-		return res;
+		return lh.toString();
 	}
 	
 }

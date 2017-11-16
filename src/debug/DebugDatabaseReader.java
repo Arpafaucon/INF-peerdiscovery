@@ -5,7 +5,7 @@
  */
 package debug;
 
-import main.Database;
+import database.Database;
 
 
 /**
@@ -26,10 +26,7 @@ public class DebugDatabaseReader implements DebugStateMessage{
 	
 	@Override
 	public String readState() {
-		return String.format("== Internal ==%n%s%n"
-				+ "== External ==%n%s%n", 
-				Database.getInternalDatabase().toString(), 
-				Database.getPeerDatabases().toString());
+		return Database.getSummary();
 	}
 	
 }

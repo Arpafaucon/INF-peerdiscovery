@@ -5,10 +5,12 @@
  */
 package handlers;
 
+import com.sun.istack.internal.logging.Logger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import main.Database;
+import java.util.logging.Level;
+import database.Database;
 import main.Main;
 import main.MessagePacket;
 import message.ListMessage;
@@ -41,12 +43,14 @@ public class SynHandler extends ThreadedMessageHandler{
 			//legitimacy checks
 			if(shouldAnswer(sm)){
 				//answering
+				System.out.println("\t[ASYN] " + sm.getSenderId());
 				List<String> data = Database.getInternalDatabase().getSplitData(Main.CHUNK_SIZE);
 				for(int i=0; i<data.size() ; i++){
 					ListMessage lm = new ListMessage(Main.ID, sm.getSenderId(), 
 							Database.getInternalDatabase().getSequenceNumber(), 
 							data.size(), i, data.get(i));
 					getMuxDemux().send(lm.toEncodedString());
+					Logger.getLogger(SynHandler.class).log(Level.INFO, "list sent to " + sm.getSenderId());
 				}
 			}
 			
@@ -56,7 +60,7 @@ public class SynHandler extends ThreadedMessageHandler{
 	}
 	
 	static boolean shouldAnswer(SynMessage sm){
-		return(sm.getPeerId().equals(Main.ID)
+		return(sm.isForMe()
 				&& sm.getSequenceNb() == Database.getInternalDatabase().getSequenceNumber());
 	}
 

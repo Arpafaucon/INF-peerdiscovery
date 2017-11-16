@@ -3,7 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package main;
+package sender;
+
+import database.Database;
+import handlers.ListHandler;
+import java.util.List;
+import java.util.logging.Level;
+import main.Main;
+import main.MuxDemuxSimple;
+import message.HelloMessage;
+import message.SynMessage;
+import peertable.PeerRecord;
+import peertable.PeerTable;
 
 /**
  * class actively ensuring peer synchronisation
@@ -14,12 +25,35 @@ package main;
  * @author arpaf
  */
 public class SynSender extends Thread{
+	
+	MuxDemuxSimple mds;
+	ListHandler listHandler;
 
+	public SynSender(MuxDemuxSimple mds, ListHandler listHandler) {
+		this.mds = mds;
+		this.listHandler = listHandler;
+	}
+	
+	private void synPeers(){
+		PeerTable.getTable().getUnsyncPeers().forEach((record) -> {
+			SynMessage sm = new SynMessage(Main.ID, record.peerID, record.peerSeqNum);
+			mds.send(sm.toEncodedString());
+			listHandler.createBundle(sm);
+		});
+	}
 	
 	
 	@Override
 	public void run() {
-		
+		while (!Thread.interrupted()) {
+			try {
+				//for question 2-3
+				synPeers();
+				Thread.sleep(Main.SYN_UPDATE * 1000);
+
+			} catch (InterruptedException ex) {
+			}
+		}
 	}
 
 }

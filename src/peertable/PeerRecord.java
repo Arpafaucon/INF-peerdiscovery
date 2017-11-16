@@ -9,27 +9,29 @@ import java.net.InetAddress;
 
 public class PeerRecord {
 
-	String peerID;
-	InetAddress peerIPAddress;
-	int peerSeqNum;
+	public String peerID;
+	public InetAddress peerIPAddress;
+	public int peerSeqNum;
 	/**
 	 * peer expiration time, in ms
 	 */
-	long expirationTime;
-	PeerState peerState;
+	public long expirationTime;
+	public PeerState peerState;
+	public int helloInterval;
 
-	public PeerRecord(String peerID, InetAddress peerIPAddress, int peerSeqNum, long expirationTime, PeerState peerState) {
+	public PeerRecord(String peerID, InetAddress peerIPAddress, int peerSeqNum, long expirationTime, PeerState peerState, int helloInterval) {
 		this.peerID = peerID;
 		this.peerIPAddress = peerIPAddress;
 		this.peerSeqNum = peerSeqNum;
 		this.expirationTime = expirationTime;
 		this.peerState = peerState;
+		this.helloInterval = helloInterval;
 	}
 	
 	@Override
 	public String toString() {
-		return String.format("Record{ id=%16s | ip=%16s | #seq=%3d | exp=%d | s=%s}", 
-				peerID, peerIPAddress, peerSeqNum, expirationTime, peerState);
+		return String.format("Record{ id=%16s | ip=%16s | #seq=%3d | exp=%d | hi=%d | s=%s}", 
+				peerID, peerIPAddress, peerSeqNum, expirationTime, helloInterval, peerState);
 //		return "PeerRecord{" + "peerID=" + peerID + ", peerIPAddress=" + peerIPAddress + ", peerSeqNum=" + peerSeqNum + ", expirationTime=" + expirationTime + ", peerState=" + peerState + '}';
 	}
 

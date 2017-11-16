@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
  *
  * @author arpaf, AmaurX, Swann
  */
-public class HelloMessage {
+public class HelloMessage implements Message{
 
 	
 	private static final String HELLO = "HELLO"; 
@@ -90,13 +90,14 @@ public class HelloMessage {
 		this.peers = peers;
 	}
 
-	public String getHelloMessageAsEncodedString() throws MessageException {
+	@Override
+	public String toEncodedString() {
 		String result = String.format("HELLO;%s;%s;%d;%d", 
 				senderId, sequenceNumber, helloInterval, numPeers);
 
-		if (numPeers != peers.size()) {
-			throw new MessageException("numPeers isn't equal to peers.size().");
-		}
+//		if (numPeers != peers.size()) {
+//			throw new MessageException("numPeers isn't equal to peers.size().");
+//		}
 
 		StringBuilder res = new StringBuilder(result);
 		for (int i = 0; i < numPeers; i++) {
@@ -155,6 +156,13 @@ public class HelloMessage {
 	public String toString() {
 		return "HELLO{" + "senderId=" + senderId + ", sequenceNumber=" + sequenceNumber + ", helloInterval=" + helloInterval + ", numPeers=" + numPeers + ", peers=" + peers + '}';
 	}
+
+	@Override
+	public boolean isForMe() {
+		return true;
+	}
+	
+	
 	
 	
 }

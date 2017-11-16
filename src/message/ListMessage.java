@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  * @see SynMessage
  * @author arpaf
  */
-public class ListMessage {
+public class ListMessage implements Message{
 
 	/**
 	 * pattern <br>
@@ -27,30 +27,30 @@ public class ListMessage {
 	 * (only), and which represents the symbolic name (as in: JuansFileServer)
 	 * of the sending machine.
 	 */
-	String senderId;
+	public final String senderId;
 	/**
 	 * the senderID of the peer, to which this message is addressed (i.e., is
 	 * the peer ID of the machine sending the SYN)
 	 */
-	String peerId;
+	public final String peerId;
 	/**
 	 * the sequence# of the database of senderID
 	 */
-	int sequenceNb;
+	public final int sequenceNb;
 	/**
 	 * an integer number which indicates how many LIST messages will be
 	 * generated, in order to send the entire database
 	 */
-	int totalParts;
+	public final int totalParts;
 	/**
 	 * indicates which, from among the TotalParts messages this message is.
 	 */
-	int partNb;
+	public final int partNb;
 	/**
 	 * a text string of max 255 characters, which contains (part of) the
 	 * database being synchronised.
 	 */
-	String data;
+	public final String data;
 
 	public ListMessage(String senderId, String peerId, int sequenceNb, int totalParts, int partNb, String data) {
 		this.senderId = senderId;
@@ -86,8 +86,9 @@ public class ListMessage {
 		}
 	}
 
+	@Override
 	public String toEncodedString() {
-		return String.format("LIST;%s;%s;%d;%d;%d:%s",
+		return String.format("LIST;%s;%s;%d;%d;%d;%s",
 				senderId, peerId, sequenceNb,
 				totalParts, partNb, data);
 	}
@@ -98,5 +99,17 @@ public class ListMessage {
 				+ ", sequenceNb=" + sequenceNb + ", totalParts=" + totalParts 
 				+ ", partNb=" + partNb + ", data=" + data + '}';
 	}
+
+	@Override
+	public boolean isForMe() {
+		return main.Main.ID.equals(peerId);
+	}
+
+	@Override
+	public String getSenderId() {
+		return senderId;
+	}
+	
+	
 
 }

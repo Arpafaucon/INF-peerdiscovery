@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * PeerTable class tracks state of all peers, and periodically update them
@@ -67,10 +68,11 @@ public class PeerTable {
 			}
 			//updating address & other data
 			pr.peerIPAddress = address;
+			pr.helloInterval = hm.getHelloInterval();
 		} else {
 			//registering peer
 			//!helloInterval is in s
-			pr = new PeerRecord(peerId, address, hm.getSequenceNumber(), hm.getHelloInterval() * 1000L + time, PeerState.HEARD);
+			pr = new PeerRecord(peerId, address, hm.getSequenceNumber(), hm.getHelloInterval() * 1000L + time, PeerState.HEARD, hm.getHelloInterval());
 			peerTable.put(peerId, pr);
 		}
 	}
@@ -84,7 +86,7 @@ public class PeerTable {
 		tableStr = peerTable.entrySet().stream()
 				.map((record) -> record.getValue().toString() + "\n")
 				.reduce(tableStr, String::concat);
-		return "PeerTable:("+ peerTable.size()+")\n" + tableStr;
+		return "PeerTable:(" + peerTable.size() + ")\n" + tableStr;
 //		return peerTable.toString();
 	}
 
@@ -96,6 +98,16 @@ public class PeerTable {
 //				});
 //		return res;
 		return new ArrayList<>(peerTable.keySet());
+	}
+
+	public synchronized List<PeerRecord> getUnsyncPeers() {
+		return peerTable.entrySet()
+				.stream()
+				.map((entry) -> entry.getValue())
+				.filter((record) -> {
+					return (record.peerState != PeerState.SYNCHRONISED);
+				})
+				.collect(Collectors.toList());
 	}
 
 }

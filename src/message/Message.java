@@ -10,4 +10,8 @@ package message;
  * @author arpaf
  */
 public interface Message {
+	public boolean isForMe();
+	public String toEncodedString();
+	public String getSenderId();
+	
 }

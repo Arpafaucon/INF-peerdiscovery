@@ -1,42 +1,35 @@
 package handlers;
 
-import main.MuxDemuxSimple;
-import java.util.concurrent.SynchronousQueue;
+import message.MessageException;
+import message.HelloMessage;
 import main.MessagePacket;
+import peertable.PeerTable;
 
 /**
- * @deprecated 
- * just pinging back helloMessages...
+ * Handles received hello Messages display them, and update the peertable
+ * accordingly
+ *
  * @author arpaf
  */
-@Deprecated
-public class HelloHandler implements SimpleMessageHandler, Runnable {
+public class HelloHandler extends ThreadedMessageHandler {
 
-	private final SynchronousQueue<String> incoming = new SynchronousQueue<>();
-	private MuxDemuxSimple myMuxDemux = null;
+	PeerTable peerTable;
 
-	@Override
-	public void setMuxDemux(MuxDemuxSimple md) {
-		myMuxDemux = md;
+	/**
+	 *
+	 * @param peerTable
+	 */
+	public HelloHandler(PeerTable peerTable) {
+		this.peerTable = peerTable;
 	}
 
 	@Override
-	public void handleMessage(MessagePacket msp) {
+	protected void processMessage(MessagePacket msp) {
 		try {
-			incoming.put(msp.msg);
-		} catch (InterruptedException ex) {
-		}
-	}
-
-	
-	@Override
-	public void run() {
-		while (true) {
-			try {
-				String msg = incoming.take();
-				myMuxDemux.send(msg);
-			} catch (InterruptedException e) {
-			}
+			HelloMessage hm = HelloMessage.parse(msp.msg);
+//			System.out.println("HELLO RECEIVED]\n" + hm.toString());
+			peerTable.updatePeer(hm, msp.address, msp.time);
+		} catch (MessageException ex) {
 		}
 	}
 

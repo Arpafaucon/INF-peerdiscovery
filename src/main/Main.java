@@ -1,12 +1,18 @@
 package main;
 
+import database.Database;
+import database.DatabaseUpdater;
+import sender.HelloSender;
 import debug.DebugDatabaseReader;
+import debug.DebugListReader;
 import debug.DebugPeerTableReader;
 import debug.DebugServer;
 import debug.DebugStateMessage;
 import handlers.DebugReceiver;
-import handlers.HelloReceiver;
+import handlers.HelloHandler;
+import handlers.ListHandler;
 import handlers.SimpleMessageHandler;
+import handlers.SynHandler;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.ArrayList;
@@ -20,9 +26,10 @@ import peertable.PeerTable;
 public class Main {
 
 	public static final String ID = "dexter";
-	public static final int SEND_HELLO_INTERVAL = 2;
+	public static final int SEND_HELLO_INTERVAL = 40;
 	public static final int CHUNK_SIZE = 255;
 	public static final int SOCKET_PORT = 4242;
+	public static final int SYN_UPDATE = 4;
 	
 	public static final int HANDLER_CAPACITY = 20;
 	
@@ -41,27 +48,40 @@ public class Main {
 			PeerTable peerTable = PeerTable.getTable();
 
 			DatagramSocket socket = new DatagramSocket(SOCKET_PORT);
+			
+			Database.getInternalDatabase().setData("This is the initialisation database fom dexter !");
 
 //			SimpleMessageHandler[] handlers = new SimpleMessageHandler[3];
 			List<SimpleMessageHandler> handlers = new ArrayList<>();
-			HelloReceiver helloReceiver = new HelloReceiver(peerTable);
-			DebugReceiver debugReceiver = new DebugReceiver();
+			HelloHandler helloReceiver = new HelloHandler(peerTable);
 			handlers.add(helloReceiver);
-			handlers.add(debugReceiver);
 			helloReceiver.start();
+			DebugReceiver debugReceiver = new DebugReceiver();
+			handlers.add(debugReceiver);
 			debugReceiver.start();
+			SynHandler synHandler = new SynHandler();
+			handlers.add(synHandler);
+			synHandler.start();
+			ListHandler listHandler = new ListHandler();
+			handlers.add(listHandler);
+			listHandler.start();
+			
 
 			//handlers[2] = new LSAHandler();
 			MuxDemuxSimple muxDemuxSimple = new MuxDemuxSimple(handlers, socket);
 //			new Thread(handlers[1]).start();
 			new Thread(muxDemuxSimple).start();
 			HelloSender hs = new HelloSender(muxDemuxSimple);
-//			new Thread(hs).start();
+			new Thread(hs).start();
+			
+			DatabaseUpdater databaseUpdater = new DatabaseUpdater();
+			databaseUpdater.start();
 
 			//--DEBUG--
 			final Map<String, DebugStateMessage> intents = new HashMap<>();
 			intents.put("peer", new DebugPeerTableReader(peerTable));
 			intents.put("data", new DebugDatabaseReader(Database.getInternalDatabase()));
+			intents.put("list", new DebugListReader(listHandler));
 			DebugServer.threadedServer(DEBUG_PORT, intents);
 
 		} catch (SocketException ex) {

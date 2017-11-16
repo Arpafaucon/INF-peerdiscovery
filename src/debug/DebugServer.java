@@ -124,7 +124,14 @@ public class DebugServer {
 		static String readState(String req){
 			if("".equals(req)){
 				//nothing asked: lets print available interface
-				return "list of intents:\n" + intents.keySet().toString();
+				String linkedIntents = intents.keySet().stream()
+						.map((entry) -> String.format("<a href=\"%s\">%s</a><br>", entry,entry))
+						.reduce("", String::concat);
+				return String.format("<html>"
+						+ "<body>"
+						+ "<h2>list of intents</h2>"
+						+ "%s", linkedIntents);
+//				return "list of intents:\n" + intents.keySet().toString();
 			}
 			return intents.get(req).readState();
 		}

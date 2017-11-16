@@ -2,12 +2,13 @@ package message;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import main.Main;
 
 /**
  *
  * @author arpaf
  */
-public class SynMessage {
+public class SynMessage implements Message{
 
 	/**
 	 * format : SYN;senderID;peerID;sequence#;...
@@ -72,6 +73,7 @@ public class SynMessage {
 				+ ", sequenceNb=" + sequenceNb + ", trailing=" + trailing + '}';
 	}
 
+	@Override
 	public String getSenderId() {
 		return senderId;
 	}
@@ -84,4 +86,10 @@ public class SynMessage {
 		return sequenceNb;
 	}
 
+	@Override
+	public boolean isForMe() {
+		return Main.ID.equals(getPeerId());
+	}
+
+	
 }
