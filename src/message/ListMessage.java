@@ -21,6 +21,11 @@ public class ListMessage implements Message{
 	 * <code>LIST;senderID;peerID;sequence#;TotalParts;part#;data;</code>
 	 */
 	private static final Pattern LIST_PATTERN = Pattern.compile("LIST;(\\w+);(\\w+);(\\d+);(\\d+);(\\d+);(.*)");
+	
+	/**
+	 * max allowed length for the data part
+	 */
+	private static final int MAX_DATA_LENGTH = 256;
 
 	/**
 	 * string of up to 16 characters, containing the characters A-Z a-z 0-9
@@ -61,6 +66,15 @@ public class ListMessage implements Message{
 		this.data = data;
 	}
 
+	/**
+	 * Attempts to convert the String into a ListMessage
+	 * 
+	 * Performs format checks, as well as some security checks 
+	 * (seqNb > 0; partNb > 0 ; totalParts > 0 : data too long)
+	 * @param mes the string to parse
+	 * @return a filled ListMessage with the infos
+	 * @throws MessageException if message was invalid
+	 */
 	public static ListMessage parse(String mes) throws MessageException {
 		Matcher listMatcher = LIST_PATTERN.matcher(mes);
 		if (listMatcher.find()) {
@@ -73,6 +87,13 @@ public class ListMessage implements Message{
 				int totalParts = Integer.parseInt(listMatcher.group(4));
 				int partNb = Integer.parseInt(listMatcher.group(5));
 				String data = listMatcher.group(6);
+				
+				if(data.length() > MAX_DATA_LENGTH){
+					throw new MessageException("data was too long");
+				}
+				if(seqNb < 0 || partNb < 0 || totalParts <=0){
+					throw new MessageException("inconsistent numbers in message");
+				}
 
 				//We can there do further checks
 				ListMessage list = new ListMessage(senderId, peerId, seqNb, totalParts, partNb, data);
@@ -86,6 +107,10 @@ public class ListMessage implements Message{
 		}
 	}
 
+	/**
+	 * 
+	 * @return string to send over the network
+	 */
 	@Override
 	public String toEncodedString() {
 		return String.format("LIST;%s;%s;%d;%d;%d;%s",

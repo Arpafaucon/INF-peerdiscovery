@@ -20,16 +20,6 @@ public class HelloMessage implements Message{
 	private static final String HELLO = "HELLO"; 
 	private static final int MAX_HELLO_INTERVAL = 255;
 //	private static final Pattern HELLO_PATTERN = Pattern.compile("HELLO;(\\w+);")
-
-	private final String senderId;
-	private final int sequenceNumber;
-	/**
-	 * interval between messages, in s
-	 */
-	private final int helloInterval;
-	private int numPeers;
-	private final List<String> peers;
-
 	public static HelloMessage parse(String s) throws MessageException{
 		String slist[] = s.split(";");
 
@@ -65,6 +55,16 @@ public class HelloMessage implements Message{
 		
 		return new HelloMessage(senderId, sequenceNumber, helloInterval, peers);
 	}
+
+	private final String senderId;
+	private final int sequenceNumber;
+	/**
+	 * interval between messages, in s
+	 */
+	private final int helloInterval;
+	private int numPeers;
+	private final List<String> peers;
+
 
 	/*
 	*	Constructor from info
@@ -116,27 +116,30 @@ public class HelloMessage implements Message{
 	}
 
 	public String toVerboseString() {
-		String result = "The sender is " + senderId + "\n";
-		result += "Senquence number is " + sequenceNumber;
-		result += " and HelloInterval is " + helloInterval + "\n";
+		String header = String.format("The sender is %s\n"
+				+ "SeqNb = %d\n"
+				+ "HelloInterval = %d\n", 
+				senderId, sequenceNumber, helloInterval);
+		StringBuilder builder = new StringBuilder(header);
 
 		if (numPeers != peers.size()) {
 			System.out.println("numPeers isn't equal to peers.size().");
 		}
 
 		if (numPeers > 0) {
-			result += "The " + numPeers + " peers are :\n";
-			result += peers.get(0);
+			builder.append("The ").append(numPeers).append(" peers are :\n");
+			builder.append(peers.get(0));
 			for (int i = 1; i < peers.size(); i++) {
-				result += ", " + peers.get(i);
+				builder.append(", ").append(peers.get(i));
 			}
-			result += ".\n";
+			builder.append(".\n");
 		} else {
-			result += "There are no peers\n";
+			builder.append("There are no peers\n");
 		}
-		return result;
+		return builder.toString();
 	}
 
+	@Override
 	public String getSenderId() {
 		//necessary to identify the peer who sent the message in the peerTable when receiving
 		return senderId;
