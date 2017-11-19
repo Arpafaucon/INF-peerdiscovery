@@ -2,7 +2,6 @@ package main;
 
 import database.Database;
 import database.DatabaseUpdater;
-import sender.HelloSender;
 import debug.DebugDatabaseReader;
 import debug.DebugListReader;
 import debug.DebugPeerTableReader;
@@ -22,6 +21,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import peertable.PeerTable;
+import sender.HelloSender;
 
 public class Main {
 
@@ -90,9 +90,16 @@ public class Main {
 	}
 
 	private static void initLogs() {
+//		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s [%1$tc]%n");
+//		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s [%1$tc]%n");
+		System.setProperty("java.util.logging.SimpleFormatter.format", 
+				"%1$tH:%1$tM:%1$tS %2$s%n%4$s: %5$s%n");
+		
+		System.setProperty("java.util.logging.ConsoleHandler.level","FINER");
 		Logger rootLog = Logger.getLogger("");
 		rootLog.setLevel(LOG_LEVEL);
 		rootLog.getHandlers()[0].setLevel(LOG_LEVEL); // Default console handler
+		rootLog.info("log attemps");
 	}
 
 }

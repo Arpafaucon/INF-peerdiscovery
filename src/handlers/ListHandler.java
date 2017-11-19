@@ -9,7 +9,6 @@ import database.Database;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.MessagePacket;
 import message.ListMessage;
@@ -22,6 +21,8 @@ import message.SynMessage;
  * @author arpaf
  */
 public class ListHandler extends ThreadedMessageHandler {
+	
+	static final Logger logger = Logger.getLogger(ListHandler.class.getName());
 
 	private enum BundleState {
 		/**
@@ -180,6 +181,16 @@ public class ListHandler extends ThreadedMessageHandler {
 				table.remove(entry.getKey());
 			}
 		});
+		logger.fine("cleaned ListHandler table");
 	}
+
+	@Override
+	public String toString() {
+		String res = table.toString();
+		return "ListHandler : \n" + res;
+	}
+	
+	
+	
 
 }
