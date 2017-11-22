@@ -86,7 +86,7 @@ public class HelloMessage implements Message{
 		senderId = senderIdIn;
 		sequenceNumber = sequenceNo;
 		helloInterval = helloIntervalIn;
-		numPeers = 0;
+		numPeers = peers.size();
 		this.peers = peers;
 	}
 

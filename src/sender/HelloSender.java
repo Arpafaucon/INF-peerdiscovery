@@ -29,7 +29,8 @@ public class HelloSender implements Runnable {
 	@Override
 	public void run() {
 		while (!Thread.interrupted()) {
-			m = new HelloMessage(Main.ID, Database.getInternalDatabase().getSequenceNumber(), Main.SEND_HELLO_INTERVAL);
+			m = new HelloMessage(Main.ID, Database.getInternalDatabase().getSequenceNumber(), 
+                                Main.SEND_HELLO_INTERVAL, peertable.PeerTable.getTable().getPeerIdList());
 			muxDemuxSimple.send(m.toEncodedString());
 			try {
 				//for question 2-3
