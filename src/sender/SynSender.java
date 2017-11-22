@@ -5,15 +5,10 @@
  */
 package sender;
 
-import database.Database;
 import handlers.ListHandler;
-import java.util.List;
-import java.util.logging.Level;
 import main.Main;
 import main.MuxDemuxSimple;
-import message.HelloMessage;
 import message.SynMessage;
-import peertable.PeerRecord;
 import peertable.PeerTable;
 
 /**

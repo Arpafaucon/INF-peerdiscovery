@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import peertable.PeerTable;
 import sender.HelloSender;
+import sender.SynSender;
 
 public class Main {
 
@@ -29,7 +30,7 @@ public class Main {
 	public static final int SEND_HELLO_INTERVAL = 40;
 	public static final int CHUNK_SIZE = 255;
 	public static final int SOCKET_PORT = 4242;
-	public static final int SYN_UPDATE = 4;
+	public static final int SYN_UPDATE = 20;
 	
 	public static final int HANDLER_CAPACITY = 20;
 	
@@ -73,6 +74,8 @@ public class Main {
 			new Thread(muxDemuxSimple).start();
 			HelloSender hs = new HelloSender(muxDemuxSimple);
 			new Thread(hs).start();
+			SynSender ss = new SynSender(muxDemuxSimple, listHandler);
+			ss.start();
 			
 			DatabaseUpdater databaseUpdater = new DatabaseUpdater();
 			databaseUpdater.start();

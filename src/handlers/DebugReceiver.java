@@ -20,7 +20,7 @@ public class DebugReceiver extends ThreadedMessageHandler {
 		try {
 			HelloMessage hm = HelloMessage.parse(msp.msg);
 			if (hm.isForMe()) {
-//				System.out.println("[HELLO] " + hm.toString());
+				System.out.println("[HELLO] " + hm.toString());
 			}
 			handled = true;
 		} catch (MessageException ex) {

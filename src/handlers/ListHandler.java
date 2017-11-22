@@ -93,7 +93,7 @@ public class ListHandler extends ThreadedMessageHandler {
 
 		@Override
 		public String toString() {
-			return "ListBundle{" + "creationTimestamp=" + creationTimestamp + ", seqNb=" + seqNb + ", peerId=" + peerId + ", totalParts=" + totalParts + ", state=" + state + "messages=\n" + messages + "\nassembledMessage=" + assembledMessage + '}';
+			return "ListBundle{" + "creationTimestamp=" + creationTimestamp + ", seqNb=" + seqNb + ", peerId=" + peerId + ", totalParts=" + totalParts + ", state=" + state + " messages=\n" + messages + "\nassembledMessage=" + assembledMessage + '}';
 		}
 
 		/**
@@ -135,7 +135,7 @@ public class ListHandler extends ThreadedMessageHandler {
 	@Override
 	protected void processMessage(MessagePacket msp) {
 		String mes = msp.msg;
-		System.out.println("mes : " + mes);
+//		System.out.println("mes : " + mes);
 		try {
 			ListMessage lm = ListMessage.parse(msp.msg);
 			ListBundle bundle = table.get(lm.peerId);
@@ -181,7 +181,7 @@ public class ListHandler extends ThreadedMessageHandler {
 				table.remove(entry.getKey());
 			}
 		});
-		logger.fine("cleaned ListHandler table");
+//		logger.fine("cleaned ListHandler table");
 	}
 
 	@Override

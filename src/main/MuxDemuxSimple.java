@@ -20,16 +20,17 @@ public class MuxDemuxSimple implements Runnable {
 	private BufferedReader in;
 	private final List<SimpleMessageHandler> myMessageHandlers;
 	private final ArrayBlockingQueue<String> outgoing = new ArrayBlockingQueue<>(10);
-	
-	
+
 	private Runnable senderDaemon = new Runnable() {
 		@Override
 		public void run() {
 			while (!Thread.interrupted()) {
 				try {
-					byte[] msgToSend = outgoing.take().getBytes();
+					String mes = outgoing.take();
+					byte[] msgToSend = mes.getBytes();
 					DatagramPacket p = new DatagramPacket(msgToSend, 0, msgToSend.length, BROADCAST, main.Main.SOCKET_PORT);
 					mySocket.send(p);
+					System.out.println("\t[SEND] " + mes);
 				} catch (InterruptedException | IOException ex) {
 					Logger.getLogger(MuxDemuxSimple.class.getName()).log(Level.SEVERE, null, ex);
 				}
@@ -63,14 +64,14 @@ public class MuxDemuxSimple implements Runnable {
 		while (!Thread.interrupted()) {
 			try {
 				// -- RECEIVING MESSAGE --
-				DatagramPacket messageReçu = new DatagramPacket(buf, 8192);
-				mySocket.receive(messageReçu);
+				DatagramPacket messageRecu = new DatagramPacket(buf, 8192);
+				mySocket.receive(messageRecu);
 				String message = CONVERTER.decode(
-						ByteBuffer.wrap(buf, 0, messageReçu.getLength()))
+						ByteBuffer.wrap(buf, 0, messageRecu.getLength()))
 						.toString();
 				MessagePacket p = new MessagePacket(message,
 						System.currentTimeMillis(),
-						messageReçu.getAddress());
+						messageRecu.getAddress());
 				myMessageHandlers.stream().forEach((myMessageHandler) -> {
 					myMessageHandler.handleMessage(p);
 				});

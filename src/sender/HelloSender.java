@@ -29,14 +29,14 @@ public class HelloSender implements Runnable {
 	@Override
 	public void run() {
 		while (!Thread.interrupted()) {
+			m = new HelloMessage(Main.ID, Database.getInternalDatabase().getSequenceNumber(), Main.SEND_HELLO_INTERVAL);
+			muxDemuxSimple.send(m.toEncodedString());
 			try {
 				//for question 2-3
-				m = new HelloMessage(Main.ID, Database.getInternalDatabase().getSequenceNumber(), Main.SEND_HELLO_INTERVAL);
 				Thread.sleep(Main.SEND_HELLO_INTERVAL * 1000);
 
 			} catch (InterruptedException ex) {
 			}
-			muxDemuxSimple.send(m.toEncodedString());
 //			logger.log(Level.FINE, "sent hello : {0}", m.toEncodedString());
 		}
 	}
