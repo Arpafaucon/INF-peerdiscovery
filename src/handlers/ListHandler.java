@@ -62,6 +62,7 @@ public class ListHandler extends ThreadedMessageHandler {
 		}
 
 		public void add(ListMessage lm) {
+			System.out.println("\t\tLIST got message from " + peerId + " -- " + lm.toString());
 			if (lm.isForMe()
 					&& peerId.equals(lm.getSenderId())
 					&& !(state == BundleState.FAILED)) {
@@ -112,10 +113,12 @@ public class ListHandler extends ThreadedMessageHandler {
 				}
 			}
 			assembledMessage = data.toString();
+			System.out.println("ASSEMBLED DATABASE of " + peerId + assembledMessage);
 			Database peerBase = database.Database.getPeerBase(peerId);
 			peerBase.setData(assembledMessage);
 			peerBase.setSequenceNumber(seqNb);
 			state = BundleState.COMPLETED;
+			System.out.println("database" + peerBase);
 			return true;
 		}
 
@@ -138,10 +141,12 @@ public class ListHandler extends ThreadedMessageHandler {
 //		System.out.println("mes : " + mes);
 		try {
 			ListMessage lm = ListMessage.parse(msp.msg);
-			ListBundle bundle = table.get(lm.peerId);
-			if (bundle != null) {
-				bundle.add(lm);
-				bundle.tryAssembling();
+			if(lm.isForMe()){
+				ListBundle bundle = table.get(lm.senderId);
+				if (bundle != null) {
+					bundle.add(lm);
+					bundle.tryAssembling();
+				}
 			}
 
 		} catch (MessageException ex) {
