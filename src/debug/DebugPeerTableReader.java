@@ -21,7 +21,9 @@ public class DebugPeerTableReader implements DebugStateMessage{
 	
 	@Override
 	public String readState() {
-		String res = table.toString();
+		
+		String res = System.currentTimeMillis() + "\n" + 
+				table.toString();
 //		System.out.println("DPTR: " + res);
 		return res;
 	}

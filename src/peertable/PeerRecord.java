@@ -18,6 +18,8 @@ public class PeerRecord {
 	public long expirationTime;
 	public PeerState peerState;
 	public int helloInterval;
+	
+	public long lastSeen;
 
 	public PeerRecord(String peerID, InetAddress peerIPAddress, int peerSeqNum, long expirationTime, PeerState peerState, int helloInterval) {
 		this.peerID = peerID;

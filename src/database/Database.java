@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Database handling class
- * Sync is done for now with basic sync keyword
- * It should be correct, but maybe under-efficient
+ * Database handling class Sync is done for now with basic sync keyword It
+ * should be correct, but maybe under-efficient
+ *
  * @author arpaf
  */
 public class Database {
@@ -39,24 +39,38 @@ public class Database {
 		}
 		return peerBase;
 	}
-	
+
+	public static synchronized String getExternalSummary() {
+		StringBuilder b = new StringBuilder();
+		peerBase.forEach((peer, base) -> {
+			b.append(peer).append( "=> ").append(base.toString()).append("\n");
+		});
+		return b.toString();
+	}
+
 	/**
 	 * get specific peer Database
-	 * 
+	 * Fixed bug : the updated database wasn't stored into memory
 	 * @param peerId
 	 * @return non-null base
 	 */
-	public static synchronized Database getPeerBase(String peerId){
-		return getPeerDatabases().getOrDefault(peerId, new Database(peerId));
+	public static synchronized Database getPeerBase(String peerId) {
+		Database base = getPeerDatabases().get(peerId);
+		if(base == null){
+			//peer not yet created
+			base = new Database(peerId);
+			getPeerDatabases().put(peerId, base);
+		}
+		return base;
 	}
-	public synchronized static String getSummary(){
+
+	public synchronized static String getSummary() {
 		return String.format("== Internal ==%n%s%n"
-				+ "== External ==%n%s%n",
+				+ "== External == (%d)%n%s%n",
 				Database.getInternalDatabase().toString(),
-				Database.getPeerDatabases().toString());
+				Database.getPeerDatabases().size(),
+				Database.getExternalSummary());
 	}
-	
-	
 
 	/**
 	 * content of the database
@@ -67,7 +81,7 @@ public class Database {
 	 * database version index
 	 */
 	private int sequenceNumber;
-	
+
 	/**
 	 * Peer ID corresponding to the database
 	 */
@@ -78,14 +92,14 @@ public class Database {
 		this.sequenceNumber = sequenceNumber;
 		this.peerId = peerId;
 	}
-	
-	private Database(String peerId){
+
+	private Database(String peerId) {
 		this("", -1, peerId);
 	}
 
-	
 	/**
 	 * export data into chunks for use in LIST messages
+	 *
 	 * @param chunkSize the size of chunks (under 255 is recommended)
 	 * @return list of chunks
 	 */
@@ -100,7 +114,7 @@ public class Database {
 
 	@Override
 	public String toString() {
-		return "Database{" + "data=" + getData() + '}';
+		return "DB (" + getSequenceNumber() + "){" + "data=" + getData() + '}';
 	}
 
 	public synchronized String getData() {
@@ -110,8 +124,8 @@ public class Database {
 	public synchronized void setData(String data) {
 		this.data = data;
 	}
-	
-	public synchronized void incrSeqNb(){
+
+	public synchronized void incrSeqNb() {
 		this.sequenceNumber++;
 	}
 
@@ -122,6 +136,5 @@ public class Database {
 	public synchronized void setSequenceNumber(int sequenceNumber) {
 		this.sequenceNumber = sequenceNumber;
 	}
-	
 
 }

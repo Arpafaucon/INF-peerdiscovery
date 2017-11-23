@@ -8,12 +8,14 @@ package handlers;
 import database.Database;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import main.MessagePacket;
 import message.ListMessage;
 import message.MessageException;
 import message.SynMessage;
+import peertable.PeerState;
 
 /**
  * Works in cooperation with SynSender to sync databases
@@ -21,7 +23,7 @@ import message.SynMessage;
  * @author arpaf
  */
 public class ListHandler extends ThreadedMessageHandler {
-	
+
 	static final Logger logger = Logger.getLogger(ListHandler.class.getName());
 
 	private enum BundleState {
@@ -94,7 +96,15 @@ public class ListHandler extends ThreadedMessageHandler {
 
 		@Override
 		public String toString() {
-			return "ListBundle{" + "creationTimestamp=" + creationTimestamp + ", seqNb=" + seqNb + ", peerId=" + peerId + ", totalParts=" + totalParts + ", state=" + state + " messages=\n" + messages + "\nassembledMessage=" + assembledMessage + '}';
+			return "ListBundle{" + "creationTimestamp=" + creationTimestamp
+					+ ", seqNb=" + seqNb + ", peerId=" + peerId
+					+ ", totalParts=" + totalParts + ", state="
+					+ state + "\nassembledMessage=" + assembledMessage + '}';
+		}
+
+		public String stringOfMessages() {
+			return messages.stream().map(m -> "\t" + m.toString() + "\n")
+					.reduce("", String::concat);
 		}
 
 		/**
@@ -103,11 +113,13 @@ public class ListHandler extends ThreadedMessageHandler {
 		 * @return true if assembling succeeded
 		 */
 		private boolean tryAssembling() {
+			System.out.println("\t\t LIST try assembling ");
 			StringBuilder data = new StringBuilder();
 			for (int i = 0; i < totalParts; i++) {
 				ListMessage lm = scanForNb(i);
 				if (lm != null) {
 					data.append(lm.data);
+					System.out.println("\t\t found " + i);
 				} else {
 					return false;
 				}
@@ -117,14 +129,19 @@ public class ListHandler extends ThreadedMessageHandler {
 			Database peerBase = database.Database.getPeerBase(peerId);
 			peerBase.setData(assembledMessage);
 			peerBase.setSequenceNumber(seqNb);
-			state = BundleState.COMPLETED;
 			System.out.println("database" + peerBase);
+			
+			state = BundleState.COMPLETED;
+			peertable.PeerTable.getTable().updatePeerState(peerId,
+					 PeerState.SYNCHRONISED);
 			return true;
 		}
 
 		private ListMessage scanForNb(int num) {
+			System.out.println("scanning " + num + " mes" + messages.size());
 			for (ListMessage lm : messages) {
-				if (lm.sequenceNb == num) {
+				System.out.println("reviewing " + lm.partNb + " == " + lm.toEncodedString());
+				if (lm.partNb == num) {
 					return lm;
 				}
 			}
@@ -141,7 +158,7 @@ public class ListHandler extends ThreadedMessageHandler {
 //		System.out.println("mes : " + mes);
 		try {
 			ListMessage lm = ListMessage.parse(msp.msg);
-			if(lm.isForMe()){
+			if (lm.isForMe()) {
 				ListBundle bundle = table.get(lm.senderId);
 				if (bundle != null) {
 					bundle.add(lm);
@@ -160,29 +177,32 @@ public class ListHandler extends ThreadedMessageHandler {
 	 *
 	 * update Policy: <br>
 	 * - only one version per peer: we delete the older one <br>
-	 * - FAILED versions are overwritten
-	 * - 
+	 * - FAILED versions are overwritten -
 	 *
 	 * @param synMessage
 	 */
 	public void createBundle(SynMessage synMessage) {
 		cleanTable();
 		ListBundle lb = table.get(synMessage.getPeerId());
-		if(lb == null || lb.seqNb < synMessage.getSequenceNb() || lb.state == BundleState.FAILED){
+		if (lb == null
+				|| lb.seqNb < synMessage.getSequenceNb()
+				|| lb.state == BundleState.FAILED) {
 			//no, outdated or failed bundle
 			//we overwrite it
-			table.put(synMessage.getPeerId(), new ListBundle(synMessage.getPeerId(), synMessage.getSequenceNb()));
+			table.put(synMessage.getPeerId(),
+					new ListBundle(synMessage.getPeerId(), synMessage.getSequenceNb()));
 		}
 	}
-	
+
 	/**
 	 * purge the table
-	 * 
+	 *
 	 * Delete COMPLETED and FAILED entries
 	 */
-	private void cleanTable(){
-		table.forEachEntry(NORM_PRIORITY, (entry)->{
-			if(entry.getValue().state == BundleState.COMPLETED || entry.getValue().state == BundleState.FAILED){
+	private void cleanTable() {
+		table.forEachEntry(NORM_PRIORITY, (entry) -> {
+			if (entry.getValue().state == BundleState.COMPLETED
+					|| entry.getValue().state == BundleState.FAILED) {
 				table.remove(entry.getKey());
 			}
 		});
@@ -191,11 +211,16 @@ public class ListHandler extends ThreadedMessageHandler {
 
 	@Override
 	public String toString() {
-		String res = table.toString();
-		return "ListHandler : \n" + res;
+		StringBuilder b = new StringBuilder("ListHandler\n");
+		table.entrySet().stream().map((e) -> {
+			b.append("-----\n").append(e.getValue().toString()).append("->\n");
+			return e;
+		}).forEachOrdered((e) -> {
+			b.append(e.getValue().stringOfMessages());
+		});
+		return b.toString();
+//		String res = table.toString();
+//		return "ListHandler : \n" + res;
 	}
-	
-	
-	
 
 }

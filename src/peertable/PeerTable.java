@@ -52,6 +52,13 @@ public class PeerTable {
 //					table.remove(peerRecord);
 //				});
 	}
+	
+	public synchronized void updatePeerState(String peerId, PeerState state){
+		PeerRecord pr = peerTable.get(peerId);
+		if(pr != null){
+			pr.peerState = state;
+		}
+	}
 
 	public synchronized void updatePeer(HelloMessage hm, InetAddress address, long time) {
 		cleanTable();
@@ -62,6 +69,7 @@ public class PeerTable {
 		PeerRecord pr = peerTable.get(peerId);
 		if (pr != null) {
 			//peer already registered
+			pr.lastSeen = time;
 			pr.expirationTime = time + hm.getHelloInterval();
 			if (hm.getSequenceNumber() != pr.peerSeqNum) {
 				pr.peerState = PeerState.INCONSISTENT;
