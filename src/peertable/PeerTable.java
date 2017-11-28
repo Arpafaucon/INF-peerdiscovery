@@ -151,5 +151,13 @@ public class PeerTable implements debug.DebuggableComponent {
 				.map((record) -> record.peerID)
 				.collect(Collectors.toList());
 	}
+	
+	public synchronized void updateOfflineVersion(String peer) throws PeerException{
+		PeerRecord pr = peerTable.get(peer);
+		if (pr == null) {
+			throw new PeerException("Peer not found : " + peer);
+		}
+		pr.offlineVersion = pr.peerSeqNum;
+	}
 
 }

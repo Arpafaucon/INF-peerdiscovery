@@ -33,8 +33,8 @@ public class PeerRecord {
 	
 	@Override
 	public String toString() {
-		return String.format("Record{ id=%16s | ip=%16s | #seq=%3d | exp=%d | hi=%d | s=%s}", 
-				peerID, peerIPAddress, peerSeqNum, expirationTime, helloInterval, peerState);
+		return String.format("id=%16s { ip=%16s | #seq=%3d | ov=%3d |  exp=%d | hi=%d | s=%s}", 
+				peerID, peerIPAddress, peerSeqNum, offlineVersion, expirationTime, helloInterval, peerState);
 //		return "PeerRecord{" + "peerID=" + peerID + ", peerIPAddress=" + peerIPAddress + ", peerSeqNum=" + peerSeqNum + ", expirationTime=" + expirationTime + ", peerState=" + peerState + '}';
 	}
 

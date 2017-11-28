@@ -20,8 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import main.Main;
 import peertable.PeerException;
 
@@ -59,6 +57,7 @@ public class FileDownloader extends Thread {
 
 	private FileDownloader() {
 		socket = new Socket();
+		setName("File Downloader");
 	}
 
 	/**
@@ -90,9 +89,12 @@ public class FileDownloader extends Thread {
 					return;
 				}
 			}
+			System.err.println("Download success!");
+			
+			peertable.PeerTable.getTable().updateOfflineVersion(peerName);
 
 		} catch (PeerException ex) {
-			Logger.getLogger(FileDownloader.class.getName()).log(Level.SEVERE, null, ex);
+			System.err.println("Tried to reach a non-existent peer" + ex.getMessage());
 		}
 	}
 
@@ -133,10 +135,13 @@ public class FileDownloader extends Thread {
 		}
 
 		reader.close();
+		
+		is.close();
+		os.close();
+		isr.close();
 
 		writer.write(b.toString());
 		writer.close();
-
 	}
 
 	private static List<String> splitFileBase(String fileBase) {
