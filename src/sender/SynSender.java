@@ -19,25 +19,32 @@ import peertable.PeerTable;
  *
  * @author arpaf
  */
-public class SynSender extends Thread{
-	
+public class SynSender extends Thread {
+
 	MuxDemuxSimple mds;
 	ListHandler listHandler;
 
 	public SynSender(MuxDemuxSimple mds, ListHandler listHandler) {
+		setName("SynSender");
 		this.mds = mds;
 		this.listHandler = listHandler;
 	}
-	
-	private void synPeers(){
-		PeerTable.getTable().getUnsyncPeers().forEach((record) -> {
-			SynMessage sm = new SynMessage(Main.ID, record.peerID, record.peerSeqNum);
-			mds.send(sm.toEncodedString());
-			listHandler.createBundle(sm);
-		});
+
+	/**
+	 * Launch a ssynchronisation attempt with all peers 
+	 */
+	private void synPeers() {
+		if (Main.ID != null) {
+			//this weird condition avoids sending SYN messages with null ID when
+			//the server is shutting down
+			PeerTable.getTable().getUnsyncPeers().forEach((record) -> {
+				SynMessage sm = new SynMessage(Main.ID, record.peerID, record.peerSeqNum);
+				mds.send(sm.toEncodedString());
+				listHandler.createBundle(sm);
+			});
+		}
 	}
-	
-	
+
 	@Override
 	public void run() {
 		while (!Thread.interrupted()) {

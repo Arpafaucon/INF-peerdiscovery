@@ -8,7 +8,6 @@ package handlers;
 import database.Database;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import main.MessagePacket;
@@ -22,7 +21,7 @@ import peertable.PeerState;
  *
  * @author arpaf
  */
-public class ListHandler extends ThreadedMessageHandler {
+public class ListHandler extends ThreadedMessageHandler implements debug.DebuggableComponent{
 
 	static final Logger logger = Logger.getLogger(ListHandler.class.getName());
 
@@ -113,13 +112,13 @@ public class ListHandler extends ThreadedMessageHandler {
 		 * @return true if assembling succeeded
 		 */
 		private boolean tryAssembling() {
-			System.out.println("\t\t LIST try assembling ");
+//			System.out.println("\t\t LIST try assembling ");
 			StringBuilder data = new StringBuilder();
 			for (int i = 0; i < totalParts; i++) {
 				ListMessage lm = scanForNb(i);
 				if (lm != null) {
 					data.append(lm.data);
-					System.out.println("\t\t found " + i);
+//					System.out.println("\t\t found " + i);
 				} else {
 					return false;
 				}
@@ -222,5 +221,12 @@ public class ListHandler extends ThreadedMessageHandler {
 //		String res = table.toString();
 //		return "ListHandler : \n" + res;
 	}
+
+	@Override
+	public String readState() {
+		return toString();
+	}
+	
+	
 
 }

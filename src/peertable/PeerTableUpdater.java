@@ -17,6 +17,7 @@ public class PeerTableUpdater extends Thread {
 	public PeerTableUpdater(List<PeerRecord> table, int PERIOD) {
 		this.table = table;
 		this.PERIOD = PERIOD;
+		setName("PeerTable Updater");
 	}
 
 	@Override

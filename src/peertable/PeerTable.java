@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  *
  * @author arpaf
  */
-public class PeerTable {
+public class PeerTable implements debug.DebuggableComponent {
 
 //	private final List<PeerRecord> table;
 	private final ConcurrentHashMap<String, PeerRecord> peerTable;
@@ -52,12 +52,14 @@ public class PeerTable {
 //					table.remove(peerRecord);
 //				});
 	}
-	
-	public synchronized void updatePeerState(String peerId, PeerState state){
+
+	public synchronized void updatePeerState(String peerId, PeerState state)
+			throws PeerException {
 		PeerRecord pr = peerTable.get(peerId);
-		if(pr != null){
-			pr.peerState = state;
+		if (pr == null) {
+			throw new PeerException("Peer doesn't exist");
 		}
+		pr.peerState = state;
 	}
 
 	public synchronized void updatePeer(HelloMessage hm, InetAddress address, long time) {
@@ -116,6 +118,21 @@ public class PeerTable {
 					return (record.peerState != PeerState.SYNCHRONISED);
 				})
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public String readState() {
+		String res = System.currentTimeMillis() + "\n"
+				+ table.toString();
+		return res;
+	}
+
+	public synchronized InetAddress getPeerAddress(String peerName) throws PeerException {
+		PeerRecord pr = peerTable.get(peerName);
+		if (pr == null) {
+			throw new PeerException("Peer not found");
+		}
+		return pr.peerIPAddress;
 	}
 
 }

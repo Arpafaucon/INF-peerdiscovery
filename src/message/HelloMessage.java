@@ -5,65 +5,95 @@ package message;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+
 /**
  *
  * @author arpaf, AmaurX, Swann
  */
-public class HelloMessage implements Message{
+public class HelloMessage implements Message {
 
-	
-	private static final String HELLO = "HELLO"; 
+	private static final String HELLO = "HELLO";
 	private static final int MAX_HELLO_INTERVAL = 255;
-//	private static final Pattern HELLO_PATTERN = Pattern.compile("HELLO;(\\w+);")
-	public static HelloMessage parse(String s) throws MessageException{
-		String slist[] = s.split(";");
+	private static final int MAX_PEER_NAME_LENGTH = 16;
+	/**
+	 * Pattern is
+	 * HELLO;senderID;sequence#;HelloInterval;NumPeers;peer1;peer2;….;peerN
+	 */
+	private static final Pattern HELLO_PATTERN = 
+			Pattern.compile("(?i)HELLO(?-i);(\\w+);(\\d+);(\\d+);(\\d+)((?:;\\w+)*)");
+	private static final Pattern PEER_PATTERN = Pattern.compile("[\\w]{1,16}");
 
-		if (slist.length < 5) {
-			throw new MessageException("Missing arguments in the hello string");
+	public static HelloMessage parse(String s) throws MessageException {
+		Matcher hMatcher = HELLO_PATTERN.matcher(s);
+		if (!hMatcher.find()) {
+			throw new MessageException("global format of the HELLO message is invalid");
+		}
+		//valid message . going on
+		String peer = hMatcher.group(1);
+		if (peer.length() > MAX_PEER_NAME_LENGTH) {
+			throw new MessageException("Peer name too long");
 		}
 
-		Pattern helloPattern = Pattern.compile("(h|H)(e|E)(l|L){2}(o|O)");
-		Matcher helloMatcher = helloPattern.matcher(slist[0]);
-
-		if (!helloMatcher.matches()) {
-			throw new MessageException("Not a Hello message");
+		int sequenceNb = Integer.parseInt(hMatcher.group(2));
+		if (sequenceNb < 0) {
+			throw new MessageException("Invalid sequence number");
 		}
 
-		String senderId = slist[1];
-		int sequenceNumber = Integer.parseInt(slist[2]);
-		int helloInterval = Integer.parseInt(slist[3]);
-		int numPeers = Integer.parseInt(slist[4]);
-		
-		if(helloInterval < 0 || helloInterval > MAX_HELLO_INTERVAL){
+		int interval = Integer.parseInt(hMatcher.group(3));
+		if (interval <= 0 || interval > MAX_HELLO_INTERVAL) {
 			throw new MessageException("Invalid hello Interval");
 		}
 
-		if (numPeers != (slist.length - 5)) {
-			throw new MessageException("Wrong number of peer given...");
+		int peerNb = Integer.parseInt(hMatcher.group(4));
+		/**
+		 * A ;-separated list of peers starting with a ;
+		 */
+		String peerList = hMatcher.group(5);
+		String slist[] = peerList.split(";");
+		List<String> peers = new ArrayList<>();
+		for(String peerid: slist){
+			if(PEER_PATTERN.matcher(peerid).matches()){
+				peers.add(peerid);
+			} else {
+//				System.out.println("rejected peer name " + peerid);
+			}
 		}
 
-		List<String> peers = new ArrayList<>();
-
-		for (int i = 5; i < (5 + numPeers); i++) {
-			peers.add(slist[i]);
+		if (peers.size() != peerNb) {
+			System.out.println("WARN: inconsistent peer nb");
 		}
 		
-		return new HelloMessage(senderId, sequenceNumber, helloInterval, peers);
+		HelloMessage hm = new HelloMessage(peer, sequenceNb, interval, peers);
+//		System.out.println(s);
+//		System.out.println(hm.toString());
+		return hm;
 	}
-
-	private final String senderId;
-	private final int sequenceNumber;
+	/**
+	 * The peer this message is from When we send the hello message, it's us
+	 * (main.ID)
+	 */
+	public final String senderId;
+	/**
+	 * Version of the database
+	 */
+	public final int sequenceNumber;
 	/**
 	 * interval between messages, in s
 	 */
-	private final int helloInterval;
-	private int numPeers;
-	private final List<String> peers;
+	public final int helloInterval;
+	/**
+	 * Number of known peers Extracted from the PeerTable when we send
+	 */
+	public int numPeers;
+	/**
+	 * List of peers known by the sender
+	 */
+	public final List<String> peers;
 
 
 	/*
@@ -77,7 +107,7 @@ public class HelloMessage implements Message{
 		numPeers = 0;
 		peers = new ArrayList<>();
 	}
-	
+
 	/*
 	*	Constructor from info
 	*	Initialization with peers
@@ -92,13 +122,12 @@ public class HelloMessage implements Message{
 
 	@Override
 	public String toEncodedString() {
-		String result = String.format("HELLO;%s;%s;%d;%d", 
+		String result = String.format("HELLO;%s;%s;%d;%d",
 				senderId, sequenceNumber, helloInterval, numPeers);
 
 //		if (numPeers != peers.size()) {
 //			throw new MessageException("numPeers isn't equal to peers.size().");
 //		}
-
 		StringBuilder res = new StringBuilder(result);
 		for (int i = 0; i < numPeers; i++) {
 			res.append(";").append(peers.get(i));
@@ -118,7 +147,7 @@ public class HelloMessage implements Message{
 	public String toVerboseString() {
 		String header = String.format("The sender is %s\n"
 				+ "SeqNb = %d\n"
-				+ "HelloInterval = %d\n", 
+				+ "HelloInterval = %d\n",
 				senderId, sequenceNumber, helloInterval);
 		StringBuilder builder = new StringBuilder(header);
 
@@ -164,8 +193,5 @@ public class HelloMessage implements Message{
 	public boolean isForMe() {
 		return true;
 	}
-	
-	
-	
-	
+
 }

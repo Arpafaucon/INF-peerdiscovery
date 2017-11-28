@@ -10,7 +10,8 @@ package database;
  */
 public class DatabaseUpdater extends Thread{
 	
-	private static final String TEMPLATE = "this is the database from dexter! the version is = ";
+	private static final String TEMPLATE = "this is the database from dexter! the version is ...suspense !"
+			+ "No kidding, my database version number is ...";
 	private static final int UPDATE_PERIOD = 60;
 
 	@Override

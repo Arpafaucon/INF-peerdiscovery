@@ -24,7 +24,7 @@ public class DebugServer {
 	
 	static final int ERROR_INVALID_ARGS = 1;
 	
-	private static Map<String, DebugStateMessage> intents;
+	private static Map<String, DebuggableComponent> intents;
 
 	/**
 	 * Inner Handler class.
@@ -129,8 +129,8 @@ public class DebugServer {
 						.reduce("", String::concat);
 				return String.format("<html>"
 						+ "<body>"
-						+ "<h2>list of intents</h2>"
-						+ "%s", linkedIntents);
+						+ "<h2>list of intents for %s</h2>"
+						+ "%s", main.Main.ID, linkedIntents);
 //				return "list of intents:\n" + intents.keySet().toString();
 			}
 			return intents.get(req).readState();
@@ -182,7 +182,7 @@ public class DebugServer {
 	 * @param port     port to listen to
 	 * @param states	the intent states to bind
 	 */
-	public static void threadedServer(int port, Map<String, DebugStateMessage> states) {
+	public static void threadedServer(int port, Map<String, DebuggableComponent> states) {
 		final AtomicInteger workerCount = new AtomicInteger(0);
 		intents = states;
 //		int workersCount = 0;
@@ -211,7 +211,7 @@ public class DebugServer {
 				}
 			}
 		} catch (IOException ex) {
-			error("Server exited due to I/O error");
+			error("Debug Server exited due to I/O error");
 		}
 	}
 

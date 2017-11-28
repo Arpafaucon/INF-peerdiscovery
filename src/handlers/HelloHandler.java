@@ -21,6 +21,7 @@ public class HelloHandler extends ThreadedMessageHandler {
 	 */
 	public HelloHandler(PeerTable peerTable) {
 		this.peerTable = peerTable;
+		setName("Hello Handler");
 	}
 
 	@Override

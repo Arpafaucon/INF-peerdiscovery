@@ -1,5 +1,6 @@
 package database;
 
+import debug.DebuggableComponent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author arpaf
  */
-public class Database {
+public class Database{
 
 	private static Database internalBase;
 	private static Map<String, Database> peerBase;
@@ -43,20 +44,21 @@ public class Database {
 	public static synchronized String getExternalSummary() {
 		StringBuilder b = new StringBuilder();
 		peerBase.forEach((peer, base) -> {
-			b.append(peer).append( "=> ").append(base.toString()).append("\n");
+			b.append(peer).append("=> ").append(base.toString()).append("\n");
 		});
 		return b.toString();
 	}
 
 	/**
-	 * get specific peer Database
-	 * Fixed bug : the updated database wasn't stored into memory
+	 * get specific peer Database Fixed bug : the updated database wasn't stored
+	 * into memory
+	 *
 	 * @param peerId
 	 * @return non-null base
 	 */
 	public static synchronized Database getPeerBase(String peerId) {
 		Database base = getPeerDatabases().get(peerId);
-		if(base == null){
+		if (base == null) {
 			//peer not yet created
 			base = new Database(peerId);
 			getPeerDatabases().put(peerId, base);
@@ -135,6 +137,10 @@ public class Database {
 
 	public synchronized void setSequenceNumber(int sequenceNumber) {
 		this.sequenceNumber = sequenceNumber;
+	}
+
+	public static debug.DebuggableComponent getDebuggableComponent() {
+		return () -> getSummary();
 	}
 
 }

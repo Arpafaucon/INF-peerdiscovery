@@ -43,15 +43,18 @@ public class SynHandler extends ThreadedMessageHandler{
 			//legitimacy checks
 			if(shouldAnswer(sm)){
 				//answering
-				System.out.println("\t[ASYN] " + sm.getSenderId());
+//				System.out.println("\t[VSYN] " + sm.getSenderId());
 				List<String> data = Database.getInternalDatabase().getSplitData(Main.CHUNK_SIZE);
 				for(int i=0; i<data.size() ; i++){
 					ListMessage lm = new ListMessage(Main.ID, sm.getSenderId(), 
 							Database.getInternalDatabase().getSequenceNumber(), 
 							data.size(), i, data.get(i));
 					getMuxDemux().send(lm.toEncodedString());
-					Logger.getLogger(SynHandler.class).log(Level.INFO, "list sent to " + sm.getSenderId());
+//					Logger.getLogger(SynHandler.class).log(Level.INFO, "list sent to " + sm.getSenderId());
 				}
+			} else if(sm.isForMe()){
+				//Wrong databse requested...
+				//maybe a little hello to tell the wold we've updated our databases
 			}
 			
 		} catch (MessageException ex) {

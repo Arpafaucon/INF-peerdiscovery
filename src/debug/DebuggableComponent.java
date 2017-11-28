@@ -9,7 +9,7 @@ package debug;
  *
  * @author arpaf
  */
-public interface DebugStateMessage {
+public interface DebuggableComponent {
 	/**
 	 * reads state of the desired value and dumps it as a string
 	 * @return 

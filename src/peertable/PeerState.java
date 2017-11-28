@@ -24,6 +24,7 @@ public enum PeerState {
 	/**
 	 * peer entry has timed out
 	 * unused for now; entry is directly removed
+	 * used in TD3
 	 */
 	DYING;
 }
