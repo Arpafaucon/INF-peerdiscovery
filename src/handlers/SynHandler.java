@@ -44,7 +44,7 @@ public class SynHandler extends ThreadedMessageHandler{
 			if(shouldAnswer(sm)){
 				//answering
 //				System.out.println("\t[VSYN] " + sm.getSenderId());
-				List<String> data = Database.getInternalDatabase().getSplitData(Main.CHUNK_SIZE);
+				List<String> data = Database.getInternalDatabase().getSplitData();
 				for(int i=0; i<data.size() ; i++){
 					ListMessage lm = new ListMessage(Main.ID, sm.getSenderId(), 
 							Database.getInternalDatabase().getSequenceNumber(), 

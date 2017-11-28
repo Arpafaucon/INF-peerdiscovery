@@ -31,16 +31,29 @@ import peertable.PeerException;
  * the PeerTable, it will download all files listed in the remote database into
  * the DIRECTORY/peer_name folder
  *
+ * Singleton pattern
  */
 public class FileDownloader extends Thread {
+	
+	private static FileDownloader fileDownloader = null;
 
-	private final BlockingQueue<MessagePacket> queue = new ArrayBlockingQueue<>(main.Main.HANDLER_CAPACITY);
+	private final BlockingQueue<String> queue = new ArrayBlockingQueue<>(main.Main.HANDLER_CAPACITY);
 	private Socket socket;
+	
+	public FileDownloader getFileDownloader(){
+		if(fileDownloader == null){
+			fileDownloader = new FileDownloader();
+		}
+		return fileDownloader;
+	}
 
 	@Override
 	public void run() {
 
 	}
+	
+	
+	private FileDownloader(){}
 
 	private void downloadPeerFiles(String peerName) {
 		try {
