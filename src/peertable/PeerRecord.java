@@ -20,6 +20,7 @@ public class PeerRecord {
 	public int helloInterval;
 	
 	public long lastSeen;
+	public int offlineVersion = -1;
 
 	public PeerRecord(String peerID, InetAddress peerIPAddress, int peerSeqNum, long expirationTime, PeerState peerState, int helloInterval) {
 		this.peerID = peerID;

@@ -139,5 +139,17 @@ public class PeerTable implements debug.DebuggableComponent {
 		}
 		return pr.peerIPAddress;
 	}
+	
+	public synchronized List<String> getPeersToDownload(){
+		return peerTable.entrySet()
+				.stream()
+				.map((entry) -> entry.getValue())
+				.filter((record) -> {
+					return (record.peerState == PeerState.SYNCHRONISED) 
+							&& record.offlineVersion != record.peerSeqNum;
+				})
+				.map((record) -> record.peerID)
+				.collect(Collectors.toList());
+	}
 
 }

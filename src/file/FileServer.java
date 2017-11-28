@@ -89,7 +89,7 @@ public class FileServer {
 				
 				print("<< SND_FILE >>");
 				print(path + " -> " + s.getRemoteSocketAddress().toString());
-				writeMessage(s, requestedFile.getAbsolutePath());
+				writeMessage(s, requestedFile.getAbsolutePath(), requestedFile.getName());
 
 
 			} catch (IOException ex) {
@@ -110,12 +110,12 @@ public class FileServer {
 		 * @param mes payload
 		 * @param isClosing should add <code>Connection: close</code>
 		 */
-		private static void writeMessage(Socket s, String file) {
+		private static void writeMessage(Socket s, String file, String fileName) {
 			try (OutputStream os = s.getOutputStream()) {
 				String fileData = readFile(file, UTF8);
 				String message = String.format("%s%n"
 						+ "%d%n"
-						+ "%s", file, fileData.getBytes().length, fileData);
+						+ "%s", fileName, fileData.getBytes().length, fileData);
 				os.write(message.getBytes());
 			} catch (IOException ex) {
 				error("Couldn't write message");
@@ -172,7 +172,7 @@ public class FileServer {
 				}
 			}
 		} catch (IOException ex) {
-			error("Debug Server exited due to I/O error");
+			error("File Server exited due to I/O error");
 		}
 	}
 

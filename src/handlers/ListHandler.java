@@ -85,11 +85,12 @@ public class ListHandler extends ThreadedMessageHandler implements debug.Debugga
 				}
 				//valid message ?
 				//non-failing error
-				if (seqNb < 0 || seqNb >= totalParts) {
+				if (seqNb < 0 || lm.partNb >= totalParts) {
 					return;
 				}
 				//LEGIT MESSAGE
 				messages.add(lm);
+				state = BundleState.RECEIVING;
 
 			}
 

@@ -24,6 +24,7 @@ import peertable.PeerTable;
 import sender.HelloSender;
 import sender.SynSender;
 import debug.DebuggableComponent;
+import file.FileDownloader;
 import file.FileExplorer;
 
 public class Main {
@@ -88,7 +89,7 @@ public class Main {
 	 *
 	 * @throws main.SetupException if folder structure is inconsistent
 	 */
-	public static void setupFileServer() throws SetupException {
+	public static void setupFileSync() throws SetupException {
 		if (!(F_DIRECTORY.exists() && F_DIRECTORY.isDirectory()
 				&& F_FOLDER.exists() && F_FOLDER.isDirectory())) {
 			throw new SetupException("FATAL : inconsistent directory structure");
@@ -96,6 +97,7 @@ public class Main {
 		System.out.println("Check. User.dir" + System.getProperty("user.dir"));
 		fileExplorer = new FileExplorer();
 		fileExplorer.start();
+		FileDownloader.getFileDownloader().start();
 		new Thread(() -> {
 			FileServer.threadedServer(FILE_SERVER_PORT);
 		}, "File Server").start();
@@ -187,7 +189,7 @@ public class Main {
 			List<SimpleMessageHandler> handlers = initIO(peerTable, socket);
 
 			//FILE SERVER
-			setupFileServer();
+			setupFileSync();
 
 			//DEBUG
 			// starts a simple HTTP server that calls readState() on given class

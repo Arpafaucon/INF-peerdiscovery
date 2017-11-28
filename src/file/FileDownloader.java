@@ -23,7 +23,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.Main;
-import main.MessagePacket;
 import peertable.PeerException;
 
 /**
@@ -59,13 +58,22 @@ public class FileDownloader extends Thread {
 	}
 
 	private FileDownloader() {
+		socket = new Socket();
 	}
 
+	/**
+	 * ensure uniqueness of requests
+	 *
+	 * @param peerName
+	 */
 	public void addPeerToQueue(String peerName) {
-		queue.add(peerName);
+		if (!queue.contains(peerName)) {
+			queue.add(peerName);
+		}
 	}
 
 	private void downloadPeerFiles(String peerName) {
+		System.out.println("Downloading files of " + peerName);
 		try {
 			String peerBase = database.Database.getPeerBase(peerName).getData();
 			InetAddress peerIP = peertable.PeerTable.getTable().getPeerAddress(peerName);
@@ -77,6 +85,9 @@ public class FileDownloader extends Thread {
 					downloadFile(peerIP, peerDir, file);
 				} catch (IOException ex) {
 					System.err.println("failed to dwn : " + file + peerName);
+					//will retry
+					addPeerToQueue(peerName);
+					return;
 				}
 			}
 
@@ -86,44 +97,45 @@ public class FileDownloader extends Thread {
 	}
 
 	private void downloadFile(InetAddress peerAddress, File PeerDir, String fileName) throws IOException {
+		System.out.println("Down file " + fileName);
 		socket.connect(new InetSocketAddress(peerAddress, Main.SOCKET_PORT));
 		//--REQUEST
-		try (
-				OutputStream os = socket.getOutputStream()) {
-			String message = String.format("Get %s\n", fileName);
-			os.write(message.getBytes(StandardCharsets.UTF_8));
-		}
+		OutputStream os = socket.getOutputStream();
+		String message = String.format("get %s\n", fileName);
+		os.write(message.getBytes(StandardCharsets.UTF_8));
+		System.out.println("message");
 
-		File file = new File(PeerDir, fileName);
-		file.mkdirs();
+		File fileToDown = new File(PeerDir, fileName);
+		fileToDown.getParentFile().mkdirs();
 
 		//--RESPONSE
-		try (PrintWriter writer = new PrintWriter(file)) {
-			BufferedReader reader = new BufferedReader(
-					new InputStreamReader(socket.getInputStream()));
-			String line;
-			//FILE NAME
-			line = reader.readLine();
-			System.out.println("DWN name " + line);
+		PrintWriter writer = new PrintWriter(fileToDown);
+		InputStream is = socket.getInputStream();
+		InputStreamReader isr = new InputStreamReader(is);
+		BufferedReader reader = new BufferedReader(isr);
+		String line;
+		//FILE NAME
+		line = reader.readLine();
+		System.out.println("DWN name " + line);
 
-			//FILE LENGTH
-			line = reader.readLine();
-			System.out.println("DWN length" + line);
-			int contentSize = Integer.MAX_VALUE;
+		//FILE LENGTH
+		line = reader.readLine();
+		System.out.println("DWN length" + line);
+		int contentSize = Integer.parseInt(line);
 
-			//CONTENT
-			StringBuilder b = new StringBuilder();
-			int size = 0;
-			while ((line = reader.readLine()) != null && size < contentSize) {
-				System.out.println("DWN " + line);
-				size += line.getBytes().length;
-				b.append(line);
-			}
-
-			reader.close();
-
-			writer.write(b.toString());
+		//CONTENT
+		StringBuilder b = new StringBuilder();
+		int size = 0;
+		while ((line = reader.readLine()) != null && size < contentSize) {
+			System.out.println("DWN " + line);
+			size += line.getBytes().length;
+			b.append(line);
 		}
+
+		reader.close();
+
+		writer.write(b.toString());
+		writer.close();
 
 	}
 
