@@ -11,8 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import main.Main;
 
 /**
@@ -20,6 +18,8 @@ import main.Main;
  * @author arpaf
  */
 public class FileExplorer extends Thread {
+
+	private String previousFileString = "";
 
 	@Override
 	public void run() {
@@ -54,25 +54,34 @@ public class FileExplorer extends Thread {
 				System.out.println("Directory " + listOfFile.getName());
 			}
 		}
-		database.Database.getInternalDatabase().setData(b.toString());
+		String fileString = b.toString();
+		if (!b.toString().equals(previousFileString)) {
+			//file set has changed
+			//we update our database
+			database.Database.getInternalDatabase().setData(b.toString());
+			database.Database.getInternalDatabase().incrSeqNb();
+			previousFileString = fileString;
+		}
+
 	}
 
 	/**
-	 * List all files in the DIRECTORY
-	 * Debug helper : return a intent usable for Debug Server
-	 * @return 
+	 * List all files in the DIRECTORY Debug helper : return a intent usable for
+	 * Debug Server
+	 *
+	 * @return
 	 */
 	public static debug.DebuggableComponent getTreeViewer() {
 		return () -> {
 			try {
-				String res = Files.find(Paths.get(Main.DIRECTORY), 
+				String res = Files.find(Paths.get(Main.DIRECTORY),
 						Integer.MAX_VALUE,
 						(filePath, fileAttr) -> {
-					return true;
-				})
+							return true;
+						})
 						.map((path) -> path.toFile())
 						.map((file) -> {
-							if(file.isDirectory()){
+							if (file.isDirectory()) {
 								return "DIR : " + file.getName() + "\n";
 							} else {
 								return file.getName() + "\n";
@@ -83,7 +92,7 @@ public class FileExplorer extends Thread {
 			} catch (IOException ex) {
 				return "error";
 			}
-					
+
 		};
 	}
 

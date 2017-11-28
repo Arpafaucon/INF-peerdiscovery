@@ -9,11 +9,13 @@ import database.Database;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.MessagePacket;
 import message.ListMessage;
 import message.MessageException;
 import message.SynMessage;
+import peertable.PeerException;
 import peertable.PeerState;
 
 /**
@@ -131,8 +133,12 @@ public class ListHandler extends ThreadedMessageHandler implements debug.Debugga
 			System.out.println("database" + peerBase);
 			
 			state = BundleState.COMPLETED;
-			peertable.PeerTable.getTable().updatePeerState(peerId,
-					 PeerState.SYNCHRONISED);
+			try {
+				peertable.PeerTable.getTable().updatePeerState(peerId,
+						PeerState.SYNCHRONISED);
+			} catch (PeerException ex) {
+				System.err.println("WARNING : ListHandler tried to update non-existent peer");
+			}
 			return true;
 		}
 

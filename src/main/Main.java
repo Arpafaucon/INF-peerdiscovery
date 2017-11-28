@@ -1,7 +1,6 @@
 package main;
 
 import database.Database;
-import database.DatabaseUpdater;
 import debug.DebugServer;
 import file.FileServer;
 import handlers.DebugReceiver;
@@ -31,15 +30,27 @@ public class Main {
 
 	public static String ID = "dexter";
 	/**
-	 * database
+	 * Shared database folder Directory is the root database folder : it
+	 * contains all peer folders
 	 */
 	public static final String DIRECTORY = "sharedFolder/";
+	/**
+	 * Personal shared folder it is expected to be a direct child of DIRECTORY
+	 * So shared files paths should be like
+	 * projectRoot/DIRECTORY/MY_FOLDER/filename
+	 */
 	public static final String MY_FOLDER = "my_folder/";
 
 	public static final File F_DIRECTORY = new File(DIRECTORY);
 	public static final File F_FOLDER = new File(DIRECTORY, MY_FOLDER);
 
+	/**
+	 * Hello boradcast period
+	 */
 	public static final int SEND_HELLO_INTERVAL = 5;
+	/**
+	 * max size of database chunk sent to the network
+	 */
 	public static final int CHUNK_SIZE = 255;
 	public static final int SOCKET_PORT = 4242;
 	public static final int FILE_SERVER_PORT = 4242;
@@ -148,11 +159,15 @@ public class Main {
 	private static void initID() {
 		if (DEBUG_RANDOM_ID) {
 			Random arnd = new Random();
-			ID = ID + arnd.nextInt(100);
+			ID = ID + arnd.nextInt(1000);
 		}
 		System.out.println("ID : " + ID);
 	}
 
+	/**
+	 * main routine
+	 * @param args unused
+	 */
 	public static void main(String[] args) {
 		try {
 			// -- Configuring log --
@@ -164,8 +179,8 @@ public class Main {
 			peerTable = PeerTable.getTable();
 
 			Database.getInternalDatabase().setData("This is the initialisation database fom dexter !");
-			DatabaseUpdater databaseUpdater = new DatabaseUpdater();
-			databaseUpdater.start();
+//			DatabaseUpdater databaseUpdater = new DatabaseUpdater();
+//			databaseUpdater.start();
 
 			initSocket();
 

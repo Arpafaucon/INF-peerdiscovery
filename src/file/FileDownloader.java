@@ -5,8 +5,11 @@
  */
 package file;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -44,8 +47,14 @@ public class FileDownloader extends Thread {
 			String peerBase = database.Database.getPeerBase(peerName).getData();
 			InetAddress peerIP = peertable.PeerTable.getTable().getPeerAddress(peerName);
 			List<String> files = splitFileBase(peerBase);
+			File peerDir = new File(Main.DIRECTORY, peerName);
 
 			for (String file : files) {
+				try {
+					downloadFile(peerIP, peerDir, file);
+				} catch (IOException ex) {
+					System.err.println("failed to dwn : " + file + peerName);
+				}
 			}
 
 		} catch (PeerException ex) {
@@ -55,14 +64,45 @@ public class FileDownloader extends Thread {
 
 	private void downloadFile(InetAddress peerAddress, File PeerDir, String fileName) throws IOException {
 		socket.connect(new InetSocketAddress(peerAddress, Main.SOCKET_PORT));
-		OutputStream os = socket.getOutputStream();
-		String message = String.format("Get %s\n", fileName);
-		os.write(message.getBytes(StandardCharsets.UTF_8));
-		os.close();
+		//--REQUEST
+		try ( 
+				OutputStream os = socket.getOutputStream()) {
+			String message = String.format("Get %s\n", fileName);
+			os.write(message.getBytes(StandardCharsets.UTF_8));
+		}
+
 		File file = new File(PeerDir, fileName);
-		PrintWriter writer = new PrintWriter(file); 
+		file.mkdirs();
+		
+		//--RESPONSE
+		try (PrintWriter writer = new PrintWriter(file)) {
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader(socket.getInputStream()));
+			String line;
+			//FILE NAME
+			line = reader.readLine();
+			System.out.println("DWN name " + line);
+			
+			//FILE LENGTH
+			line = reader.readLine();
+			System.out.println("DWN length" + line);
+			int contentSize = Integer.MAX_VALUE;
+			
+			//CONTENT
+			StringBuilder b = new StringBuilder();
+			int size = 0;
+			while ((line = reader.readLine()) != null && size < contentSize) {
+				System.out.println("DWN " + line);
+				size += line.getBytes().length;
+				b.append(line);
+			}
+			
+			reader.close();
+			
+			writer.write(b.toString());
+		}
+
 	}
-	
 
 	private static List<String> splitFileBase(String fileBase) {
 		return Arrays.asList(fileBase.split("\n"));

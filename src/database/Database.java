@@ -2,9 +2,11 @@ package database;
 
 import debug.DebuggableComponent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import main.Main;
 
 /**
  * Database handling class Sync is done for now with basic sync keyword It
@@ -12,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author arpaf
  */
-public class Database{
+public class Database {
 
 	private static Database internalBase;
 	private static Map<String, Database> peerBase;
@@ -100,7 +102,8 @@ public class Database{
 	}
 
 	/**
-	 * export data into chunks for use in LIST messages
+	 * export data into chunks for use in LIST messages 
+	 * for TD1 & TD2 only
 	 *
 	 * @param chunkSize the size of chunks (under 255 is recommended)
 	 * @return list of chunks
@@ -114,9 +117,29 @@ public class Database{
 		return ret;
 	}
 
+	/**
+	 * export data into chunks for use in LIST messages 
+	 * 
+	 * TD3 : <code>\n</code> splits also a
+	 * message (different file names in different messages)
+	 *
+	 * @return list of chunks
+	 */
+	public synchronized List<String> getSplitData() {
+		String[] filenames = data.split("\n");
+		System.out.println("filenames split" + Arrays.toString(filenames));
+		List<String> ret = new ArrayList<>();
+		for (String file : filenames) {
+			for (int start = 0; start < file.length(); start += Main.CHUNK_SIZE) {
+				ret.add(file.substring(start, Math.min(file.length(), start + Main.CHUNK_SIZE)));
+			}
+		}
+		return ret;
+	}
+
 	@Override
 	public String toString() {
-		return "DB (" + getSequenceNumber() + "){" + "data=" + getData() + '}';
+		return "DB (" + getSequenceNumber() + "){" + "data=\n" + getData() + '}';
 	}
 
 	public synchronized String getData() {
