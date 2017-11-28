@@ -59,6 +59,11 @@ public class PeerTable implements debug.DebuggableComponent {
 		if (pr == null) {
 			throw new PeerException("Peer doesn't exist");
 		}
+		if(pr.peerState != PeerState.SYNCHRONISED && state == PeerState.SYNCHRONISED){
+			//the database is synchronized again
+			//need to launch a file update
+			file.FileDownloader.getFileDownloader().addPeerToQueue(peerId);
+		}
 		pr.peerState = state;
 	}
 

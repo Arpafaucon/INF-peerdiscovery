@@ -87,7 +87,7 @@ public class FileExplorer extends Thread {
 								return file.getName() + "\n";
 							}
 						})
-						.reduce("Listed in BFS: \n", String::concat);
+						.reduce("Listed in BFS: \n=========\n\n", String::concat);
 				return res;
 			} catch (IOException ex) {
 				return "error";

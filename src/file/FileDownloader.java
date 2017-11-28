@@ -34,14 +34,14 @@ import peertable.PeerException;
  * Singleton pattern
  */
 public class FileDownloader extends Thread {
-	
+
 	private static FileDownloader fileDownloader = null;
 
 	private final BlockingQueue<String> queue = new ArrayBlockingQueue<>(main.Main.HANDLER_CAPACITY);
 	private Socket socket;
-	
-	public FileDownloader getFileDownloader(){
-		if(fileDownloader == null){
+
+	public static FileDownloader getFileDownloader() {
+		if (fileDownloader == null) {
 			fileDownloader = new FileDownloader();
 		}
 		return fileDownloader;
@@ -49,11 +49,21 @@ public class FileDownloader extends Thread {
 
 	@Override
 	public void run() {
-
+		while (!isInterrupted()) {
+			try {
+				String peerName = queue.take();
+				downloadPeerFiles(peerName);
+			} catch (InterruptedException ex) {
+			}
+		}
 	}
-	
-	
-	private FileDownloader(){}
+
+	private FileDownloader() {
+	}
+
+	public void addPeerToQueue(String peerName) {
+		queue.add(peerName);
+	}
 
 	private void downloadPeerFiles(String peerName) {
 		try {
@@ -78,7 +88,7 @@ public class FileDownloader extends Thread {
 	private void downloadFile(InetAddress peerAddress, File PeerDir, String fileName) throws IOException {
 		socket.connect(new InetSocketAddress(peerAddress, Main.SOCKET_PORT));
 		//--REQUEST
-		try ( 
+		try (
 				OutputStream os = socket.getOutputStream()) {
 			String message = String.format("Get %s\n", fileName);
 			os.write(message.getBytes(StandardCharsets.UTF_8));
@@ -86,7 +96,7 @@ public class FileDownloader extends Thread {
 
 		File file = new File(PeerDir, fileName);
 		file.mkdirs();
-		
+
 		//--RESPONSE
 		try (PrintWriter writer = new PrintWriter(file)) {
 			BufferedReader reader = new BufferedReader(
@@ -95,12 +105,12 @@ public class FileDownloader extends Thread {
 			//FILE NAME
 			line = reader.readLine();
 			System.out.println("DWN name " + line);
-			
+
 			//FILE LENGTH
 			line = reader.readLine();
 			System.out.println("DWN length" + line);
 			int contentSize = Integer.MAX_VALUE;
-			
+
 			//CONTENT
 			StringBuilder b = new StringBuilder();
 			int size = 0;
@@ -109,9 +119,9 @@ public class FileDownloader extends Thread {
 				size += line.getBytes().length;
 				b.append(line);
 			}
-			
+
 			reader.close();
-			
+
 			writer.write(b.toString());
 		}
 
