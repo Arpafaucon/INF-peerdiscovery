@@ -37,9 +37,9 @@ public class FileExplorer extends Thread {
 	 * into the internal database
 	 */
 	private void updateFileBase() {
-		System.out.println("/***********\n"
-				+ "UPDATING file list\n"
-				+ "************/");
+//		System.out.println("/***********\n"
+//				+ "UPDATING file list\n"
+//				+ "************/");
 //		File folder = new File(Main.DIRECTORY);
 		File[] listOfFiles = Main.F_FOLDER.listFiles();
 		List<String> fileNames = new ArrayList<>();
@@ -47,11 +47,11 @@ public class FileExplorer extends Thread {
 		for (File listOfFile : listOfFiles) {
 			if (listOfFile.isFile()) {
 				String name = listOfFile.getName();
-				System.out.println("File " + name);
+//				System.out.println("File " + name);
 				fileNames.add(name);
 				b.append(name).append("\n");
 			} else if (listOfFile.isDirectory()) {
-				System.out.println("Directory " + listOfFile.getName());
+//				System.out.println("Directory " + listOfFile.getName());
 			}
 		}
 		String fileString = b.toString();
