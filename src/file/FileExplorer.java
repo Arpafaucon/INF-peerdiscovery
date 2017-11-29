@@ -32,6 +32,11 @@ public class FileExplorer extends Thread {
 		}
 	}
 
+	public FileExplorer() {
+		setName("File Explorer");
+	}
+
+	
 	/**
 	 * Update file base Scans the files in the DIRECTORY folder and list them
 	 * into the internal database

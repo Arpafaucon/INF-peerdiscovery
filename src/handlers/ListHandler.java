@@ -9,7 +9,6 @@ import database.Database;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.MessagePacket;
 import message.ListMessage;
@@ -26,6 +25,12 @@ import peertable.PeerState;
 public class ListHandler extends ThreadedMessageHandler implements debug.DebuggableComponent{
 
 	static final Logger logger = Logger.getLogger(ListHandler.class.getName());
+
+	public ListHandler() {
+		setName("List Handler");
+	}
+	
+	
 
 	private enum BundleState {
 		/**
