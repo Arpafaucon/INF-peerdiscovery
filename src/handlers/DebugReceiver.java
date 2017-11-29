@@ -1,14 +1,14 @@
 package handlers;
 
-import message.HelloMessage;
-import message.MessageException;
 import main.MessagePacket;
+import message.HelloMessage;
 import message.ListMessage;
+import message.MessageException;
 import message.SynMessage;
 
 /**
  * Utility message handler who prints raw network messages
- *
+ * Tries to parse the messages, and if unsuccesful, print them in raw format
  * @author arpaf
  */
 public class DebugReceiver extends ThreadedMessageHandler {

@@ -8,12 +8,16 @@ package main;
 import java.net.InetAddress;
 
 /**
- *
+ * Wrapper around messages toc keep all the important datas
  * @author arpaf
  */
 public class MessagePacket {
 	public String msg;
 	public long time;
+	/**
+	 * sender InetAdress
+	 * SHOULD be in IPV6
+	 */
 	public InetAddress address;
 
 	public MessagePacket(String msg, long time, InetAddress address) {

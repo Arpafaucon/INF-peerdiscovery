@@ -13,7 +13,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -70,7 +69,7 @@ public class FileDownloader extends Thread {
 	}
 
 	private void downloadPeerFiles(String peerName) {
-		System.out.println("Downloading files of " + peerName);
+//		System.out.println("Downloading files of " + peerName);
 		try {
 			String peerBase = database.Database.getPeerBase(peerName).getData();
 			InetAddress peerIP = peertable.PeerTable.getTable().getPeerAddress(peerName);
@@ -88,12 +87,12 @@ public class FileDownloader extends Thread {
 					return;
 				}
 			}
-			System.err.println("Download success!");
+//			System.err.println("Download success!");
 
 			peertable.PeerTable.getTable().updateOfflineVersion(peerName);
 
 		} catch (PeerException ex) {
-			System.err.println("Tried to reach a non-existent peer" + ex.getMessage());
+//			System.err.println("Tried to reach a non-existent peer" + ex.getMessage());
 		}
 	}
 
@@ -111,7 +110,7 @@ public class FileDownloader extends Thread {
 			os = socket.getOutputStream();
 			String message = String.format("get %s\n", fileName);
 			os.write(message.getBytes(StandardCharsets.UTF_8));
-			System.out.println("message");
+//			System.out.println("message");
 
 			File fileToDown = new File(PeerDir, fileName);
 			fileToDown.getParentFile().mkdirs();
@@ -124,11 +123,11 @@ public class FileDownloader extends Thread {
 			String line;
 			//FILE NAME
 			line = reader.readLine();
-			System.out.println("DWN name " + line);
+//			System.out.println("DWN name " + line);
 
 			//FILE LENGTH
 			line = reader.readLine();
-			System.out.println("DWN length" + line);
+//			System.out.println("DWN length" + line);
 
 			int contentSize = Integer.parseInt(line);
 
@@ -136,7 +135,7 @@ public class FileDownloader extends Thread {
 			StringBuilder b = new StringBuilder();
 			int size = 0;
 			while ((line = reader.readLine()) != null && size < contentSize) {
-				System.out.println("DWN " + line);
+//				System.out.println("DWN " + line);
 				size += line.getBytes().length;
 				b.append(line);
 			}

@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 
 /**
  *
- * @author arpaf, AmaurX, Swann
+ * @author arpaf, AmaurX, 
  */
 public class HelloMessage implements Message {
 

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  * according to messages or timeouts
  *
  * Sync is done with synchronized blocks at function level, and using a sync
- * hashmap
+ * hashmap.
  *
  * @author arpaf
  */

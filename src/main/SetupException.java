@@ -6,10 +6,11 @@
 package main;
 
 /**
+ * This Exception signals an error during startup. The program can't function
+ * properly
  *
- * @author arpaf
  */
-public class SetupException extends Exception{
+public class SetupException extends Exception {
 
 	public SetupException() {
 	}
@@ -29,5 +30,5 @@ public class SetupException extends Exception{
 	public SetupException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
-	
+
 }

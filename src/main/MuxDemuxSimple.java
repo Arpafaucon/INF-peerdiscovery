@@ -1,8 +1,8 @@
 package main;
 
 import handlers.SimpleMessageHandler;
-import java.net.*;
 import java.io.*;
+import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -11,6 +11,13 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
+/**
+ * Fundamental Input/Output gate
+ * Send the messages
+ * Dispatches the received mesages to registered handlers
+ * @author arpaf
+ */
 public class MuxDemuxSimple implements Runnable {
 
 	private static final Charset CONVERTER = StandardCharsets.UTF_8;

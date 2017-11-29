@@ -5,12 +5,10 @@
  */
 package handlers;
 
-import com.sun.istack.internal.logging.Logger;
+import database.Database;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import database.Database;
 import main.Main;
 import main.MessagePacket;
 import message.ListMessage;

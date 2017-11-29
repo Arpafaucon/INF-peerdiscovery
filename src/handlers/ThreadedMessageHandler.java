@@ -2,18 +2,14 @@ package handlers;
 
 
 import com.sun.istack.internal.logging.Logger;
-import main.MuxDemuxSimple;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import main.MessagePacket;
+import main.MuxDemuxSimple;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
- *
+ * Abstract core to message handlers
+ * Provide utility core functions
  * @author arpaf
  */
 public abstract class ThreadedMessageHandler extends Thread implements SimpleMessageHandler{
