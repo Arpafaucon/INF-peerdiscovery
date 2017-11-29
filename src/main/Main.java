@@ -180,7 +180,7 @@ public class Main {
 
 			peerTable = PeerTable.getTable();
 
-			Database.getInternalDatabase().setData("This is the initialisation database fom dexter !");
+			Database.getInternalDatabase().setData("");
 //			DatabaseUpdater databaseUpdater = new DatabaseUpdater();
 //			databaseUpdater.start();
 
