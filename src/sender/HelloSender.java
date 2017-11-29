@@ -13,7 +13,7 @@ import main.Main;
 import main.MuxDemuxSimple;
 
 /**
- *
+ * Handles sending the HELLO messages
  * @author arpaf
  */
 public class HelloSender implements Runnable {
