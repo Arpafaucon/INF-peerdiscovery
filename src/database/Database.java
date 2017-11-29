@@ -130,10 +130,10 @@ public class Database {
 		System.out.println("filenames split" + Arrays.toString(filenames));
 		List<String> ret = new ArrayList<>();
 		for (String file : filenames) {
-			file = file + "\n";
-			for (int start = 0; start < file.length(); start += Main.CHUNK_SIZE) {
-				ret.add(file.substring(start, Math.min(file.length(), start + Main.CHUNK_SIZE)));
-			}
+			ret.add(file);
+//			for (int start = 0; start < file.length(); start += Main.CHUNK_SIZE) {
+//				ret.add(file.substring(start, Math.min(file.length(), start + Main.CHUNK_SIZE)));
+//			}
 		}
 		return ret;
 	}

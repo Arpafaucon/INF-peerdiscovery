@@ -125,7 +125,7 @@ public class ListHandler extends ThreadedMessageHandler implements debug.Debugga
 			for (int i = 0; i < totalParts; i++) {
 				ListMessage lm = scanForNb(i);
 				if (lm != null) {
-					data.append(lm.data);
+					data.append(lm.data).append("\n");
 //					System.out.println("\t\t found " + i);
 				} else {
 					return false;
