@@ -84,6 +84,7 @@ public class PeerTable implements debug.DebuggableComponent {
 			//updating address & other data
 			pr.peerIPAddress = address;
 			pr.helloInterval = hm.getHelloInterval();
+			pr.peerSeqNum = hm.getSequenceNumber();
 		} else {
 			//registering peer
 			//!helloInterval is in s
