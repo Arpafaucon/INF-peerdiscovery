@@ -16,16 +16,16 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import debug.DebuggableComponent;
 import main.Main;
+
 
 /**
  * basic file server over TCP
- *
+ * Answers to requests of format
+ * <code>get filename</code>
  * @author arpaf
  */
 public class FileServer {

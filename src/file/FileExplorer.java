@@ -14,7 +14,8 @@ import java.util.List;
 import main.Main;
 
 /**
- *
+ * File Crawler
+ * the FileExplorer crawls the MY_FOLDER folder and updates the database
  * @author arpaf
  */
 public class FileExplorer extends Thread {

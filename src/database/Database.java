@@ -1,12 +1,10 @@
 package database;
 
-import debug.DebuggableComponent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import main.Main;
 
 /**
  * Database handling class Sync is done for now with basic sync keyword It
