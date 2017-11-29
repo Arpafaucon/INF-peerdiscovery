@@ -131,11 +131,11 @@ public class Main {
 
 		//IO GATEWAY
 		MuxDemuxSimple muxDemuxSimple = new MuxDemuxSimple(handlers, socket);
-		new Thread(muxDemuxSimple).start();
+		new Thread(muxDemuxSimple, "MuxDemux").start();
 
 		//SENDERS
 		helloSender = new HelloSender(muxDemuxSimple);
-		new Thread(helloSender).start();
+		new Thread(helloSender, "Hello Sender").start();
 
 		synSender = new SynSender(muxDemuxSimple, listHandler);
 		synSender.start();

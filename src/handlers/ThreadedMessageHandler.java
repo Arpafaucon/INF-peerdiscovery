@@ -21,6 +21,10 @@ public abstract class ThreadedMessageHandler extends Thread implements SimpleMes
 	private MuxDemuxSimple mds;
 	private final BlockingQueue<MessagePacket> queue = new ArrayBlockingQueue<>(main.Main.HANDLER_CAPACITY);
 
+	public ThreadedMessageHandler() {
+		setName("Thr Message handler");
+	}
+
 	@Override
 	public void handleMessage(MessagePacket msp) {
 		if(queue.offer(msp) && main.Main.DEBUG_PRINT_DROPPED){

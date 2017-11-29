@@ -13,6 +13,12 @@ import message.SynMessage;
  */
 public class DebugReceiver extends ThreadedMessageHandler {
 
+	public DebugReceiver() {
+		setName("Debug Receiver");
+	}
+	
+	
+
 	@Override
 	protected void processMessage(MessagePacket msp) {
 		boolean handled = false;
