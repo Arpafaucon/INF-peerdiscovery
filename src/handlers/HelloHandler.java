@@ -7,7 +7,7 @@ import peertable.PeerTable;
 
 /**
  * Handles received hello Messages display them, and update the peertable
- * accordingly
+ * accordingly.
  *
  * @author arpaf
  */
