@@ -11,6 +11,7 @@ On localhost:4243, more information is available:
 -  The list of the downloaded files
 -  The state of the other peers
 
+Dying state was not implemented.
 
 ## Authors: 
 Grégoire Roussel
